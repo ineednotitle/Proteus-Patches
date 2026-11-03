@@ -66,12 +66,43 @@ gh api -X GET search/code \
   `ineednotitle/Proteus-Patches` is not in the code search index, or fall back to
   the manual submissions below (they work regardless of GitHub's index).
 
-## 3. Manual submissions (copy & paste)
+## 3. Manual submissions
 
 These are the four catalogs that feed the Morphe ecosystem. Submitting manually
-gets you listed even if GitHub's index never catches up.
+gets you listed even if GitHub's code-search index never recovers — which is why
+this is worth doing right away rather than waiting on §2.
 
-### 3.1 morphe-patches.software — contact form
+> Heads-up: the submissions cannot be automated from CI. A repo-scoped GitHub
+> token (and the built-in Actions token) only has **read** access to other
+> people's repositories, and fine-grained PATs cannot create forks, so PRs and
+> issues elsewhere have to be filed by you — the links below open each form with
+> everything already filled in, so it is one click plus **Submit**.
+
+### 3.1 Jman's Patch Bundle Registry — [open prefilled issue][jman]
+
+(Filing an issue is enough; they also accept a PR to `config/sources.json` if you
+prefer — the entry to add is shown in the issue body.)
+
+### 3.2 awesome-morphe — [open prefilled issue][awsm]
+
+If the YAML form does not prefill, use
+<https://github.com/nvbangg/awesome-morphe/issues/new?template=bundle-request.yml>
+and fill in:
+
+- **Action:** Add Bundle
+- **Repository URL:** `https://github.com/ineednotitle/Proteus-Patches`
+- **Description:** Proteus Patches — a curated Morphe patch bundle: 118 patches,
+  24 universal patches, 27 app packages (23 apps). Ad/analytics blocking,
+  privacy hardening and misc tweaks for Telegram, MUBI, Meesho, Amazon, Google
+  Photos, Pinterest, Reddit, Strava, ChatGPT, Firefox and more.
+- Tick both confirmation boxes.
+
+### 3.3 morphe-archive — [open prefilled issue][arch]
+
+(PR would append `ineednotitle/Proteus-Patches` to `custom_repos.txt`; the issue
+asks a maintainer to do exactly that.)
+
+### 3.4 morphe-patches.software — contact form
 
 Scroll to the bottom of <https://morphe-patches.software/> and use the
 **Name / Email Address / Message** form:
@@ -95,65 +126,9 @@ adding it manually would be much appreciated.
 Thanks!
 ```
 
-### 3.2 Jman's Patch Bundle Registry — PR (preferred) or issue
-
-Preferred: edit `config/sources.json` and append one entry (the file ends with
-`yt-music-morphe-pitch-patch`):
-
-```diff
-   "yt-music-morphe-pitch-patch": {
-     "patches": "https://github.com/AnTo88-svg/YT-Music-Morphe-Pitch-Patch",
-     "integrations": false,
-     "disabled": false
-+  },
-+  "proteus": {
-+    "patches": "https://github.com/ineednotitle/Proteus-Patches",
-+    "integrations": false,
-+    "disabled": false
-   }
- }
-```
-
-Or open an issue with:
-
-```text
-Please add this Morphe patch source to the catalog.
-
-Repository: https://github.com/ineednotitle/Proteus-Patches
-Format:     Morphe (.mpp)
-Channels:   stable releases (v2.0.0 latest) - no dev/pre-release channel
-Integrations: none required
-Apps:       27 packages / 23 apps (Telegram, MUBI, Meesho, Amazon, Google
-            Photos, Pinterest, Reddit, Strava, ChatGPT, Firefox, Excel, ...)
-```
-
-### 3.3 awesome-morphe — bundle request issue
-
-Open <https://github.com/nvbangg/awesome-morphe/issues/new?template=bundle-request.yml>
-and fill it in:
-
-- **Action:** Add Bundle
-- **Repository URL:** `https://github.com/ineednotitle/Proteus-Patches`
-- **Description:**
-
-  ```text
-  Proteus Patches - a curated Morphe patch bundle: 118 patches, 24 universal
-  patches, 27 app packages (23 apps). Ad/analytics removal, privacy hardening
-  and misc tweaks for Telegram, MUBI, Meesho, Amazon, Google Photos, Pinterest
-  and more. Valid patches-bundle.json on main, releases ship patches-*.mpp.
-  ```
-
-- Tick both confirmation boxes.
-
-### 3.4 morphe-archive — one-line PR
-
-Append to `custom_repos.txt`:
-
-```diff
- # Lines starting with # are ignored.
- hxreborn/hxreborn-tiktok-patches
-+ineednotitle/Proteus-Patches
-```
+[jman]: https://github.com/Jman-Github/Patch-Bundle-Registry/issues/new?title=Suggest+a+source%3A+ineednotitle%2FProteus-Patches+%28Morphe%29&body=Please+add+this+Morphe+patch+source+to+the+catalog.%0A%0A-+%2A%2ARepository%3A%2A%2A+https%3A%2F%2Fgithub.com%2Fineednotitle%2FProteus-Patches%0A-+%2A%2AFormat%3A%2A%2A+Morphe+%28%60.mpp%60%29%0A-+%2A%2AIntegrations%3A%2A%2A+not+required%0A-+%2A%2AChannels%3A%2A%2A+stable+releases+from+%60main%60+%28latest+%60v2.0.0%60%29%3B+prereleases+published+occasionally+%28e.g.+%60v1.17.1-projectivy.2%60%29%0A-+%2A%2ABundle+metadata%3A%2A%2A+https%3A%2F%2Fgithub.com%2Fineednotitle%2FProteus-Patches%2Fblob%2Fmain%2Fpatches-bundle.json%0A-+%2A%2APatch+list%3A%2A%2A+%60patches-list.json%60+is+published+on+the+default+branch+root+%E2%80%94+118+patches%2C+24+universal%2C+27+app+packages+%2F+23+apps%0A-+%2A%2AExample+release+artifact%3A%2A%2A+https%3A%2F%2Fgithub.com%2Fineednotitle%2FProteus-Patches%2Freleases%2Fdownload%2Fv2.0.0%2Fpatches-2.0.0.mpp%0A-+%2A%2AApps%3A%2A%2A+Telegram+%2F+Telegram+Plus+%2F+Telegram+Web%2C+MUBI%2C+Meesho%2C+Amazon+Shopping%2C+Google+Photos%2C+Pinterest%2C+Reddit%2C+Strava%2C+ChatGPT%2C+Firefox%2C+Microsoft+Excel+%26+Word%2C+Proton+Pass%2C+Proton+VPN%2C+Trakt%2C+Inure%2C+Malwarebytes%2C+Nothing+Widgets%2C+Zomato+District%2C+Claude%2C+Proxyman%2C+Mereframe%2C+IRCTC+Yatri%0A%0AI+tried+to+open+a+PR+against+%60config%2Fsources.json%60+%28as+CONTRIBUTING+suggests%29%2C+but+my+fine-grained+token+cannot+create+forks%2C+so+I%27m+requesting+it+here.+The+entry+would+be%3A%0A%0A%60%60%60json%0A%22proteus%22%3A+%7B%0A++%22patches%22%3A+%22https%3A%2F%2Fgithub.com%2Fineednotitle%2FProteus-Patches%22%2C%0A++%22integrations%22%3A+false%2C%0A++%22disabled%22%3A+false%0A%7D%0A%60%60%60%0A%0AContext+that+may+matter+for+your+own+discovery%3A+GitHub+code+search+currently+returns+%2A%2A0%2A%2A+results+for+every+file+in+this+repository+%28nothing+is+indexed%29%2C+so+a+code-search-based+crawler+will+not+find+it+on+its+own.+A+%60.gradle%2F%60+build+cache+had+been+committed+by+mistake+%28540+KB+binary+blobs%29%3B+it+is+now+untracked+on+%60main%60%2C+so+indexing+may+recover%2C+but+a+manual+entry+would+be+much+appreciated.%0A&labels=Suggestion
+[awsm]: https://github.com/nvbangg/awesome-morphe/issues/new?title=%5BBundle+Request%5D+Add+ineednotitle%2FProteus-Patches&body=%23%23%23+Action%0A%0AAdd+Bundle%0A%0A%23%23%23+Repository+URL%0A%0Ahttps%3A%2F%2Fgithub.com%2Fineednotitle%2FProteus-Patches%0A%0A%23%23%23+Description%0A%0AProteus+Patches+%E2%80%94+a+curated+Morphe+patch+bundle%3A+%2A%2A118+patches%2A%2A%2C+%2A%2A24+universal+patches%2A%2A%2C+%2A%2A27+app+packages+%2823+apps%29%2A%2A.+Ad%2Fanalytics+blocking%2C+privacy+hardening+and+misc+tweaks+for+Telegram+%2F+Telegram+Plus+%2F+Telegram+Web%2C+MUBI%2C+Meesho%2C+Amazon+Shopping%2C+Google+Photos%2C+Pinterest%2C+Reddit%2C+Strava%2C+ChatGPT%2C+Firefox%2C+Microsoft+Excel+%26+Word%2C+Proton+Pass%2C+Proton+VPN%2C+Trakt%2C+Inure%2C+Malwarebytes%2C+Nothing+Widgets%2C+Zomato+District%2C+Claude%2C+Proxyman%2C+Mereframe+and+IRCTC+Yatri.%0A%0A-+Valid+%60patches-bundle.json%60+on+%60main%60+%28v2.0.0%2C+%60download_url%60+%E2%86%92+%60patches-2.0.0.mpp%60%29%0A-+%60patches-list.json%60+published+on+the+default+branch+root%0A-+10+releases%2C+each+shipping+a+%60patches-%3Cversion%3E.mpp%60+asset%0A-+Topics%3A+%60morphe%60%2C+%60morphe-patches%60%0A%0AHeads-up+for+the+crawler%3A+GitHub+code+search+currently+returns+%2A%2A0%2A%2A+results+for+every+file+in+this+repo+%28nothing+is+indexed%29%2C+which+is+very+likely+why+it+has+never+been+picked+up.+A+%60.gradle%2F%60+build+cache+had+been+committed+by+mistake+%28540+KB+binary+blobs%29%3B+it+has+just+been+untracked+on+%60main%60%2C+so+the+repo+should+become+indexable+again+%E2%80%94+but+a+manual+entry+here+would+still+help.%0A%0A%23%23%23+Confirmation+%28Add+Bundle+only%29%0A%0A-+%5Bx%5D+The+bundle+is+compatible+with+Morphe%0A-+%5Bx%5D+The+repository+contains+a+valid+patches-bundle.json%0A&template=bundle-request.yml&labels=bundle-request
+[arch]: https://github.com/rushiforai/morphe-archive/issues/new?title=Add+ineednotitle%2FProteus-Patches&body=Please+add+this+Morphe+patch+source+to+%60custom_repos.txt%60.%0A%0A-+%2A%2ARepository%3A%2A%2A+https%3A%2F%2Fgithub.com%2Fineednotitle%2FProteus-Patches%0A-+%2A%2ABundle%3A%2A%2A+%60patches-2.0.0.mpp%60+%28v2.0.0%2C+latest+stable%29%0A-+%2A%2AContent%3A%2A%2A+118+patches%2C+24+universal+patches%2C+27+app+packages+%2F+23+apps%0A-+%2A%2A%60patches-bundle.json%60%3A%2A%2A+present+on+%60main%60%2C+%60download_url%60+points+at+the+v2.0.0+release+asset%0A%0ASuggested+diff%3A%0A%0A%60%60%60diff%0A+%23+Lines+starting+with+%23+are+ignored.%0A+hxreborn%2Fhxreborn-tiktok-patches%0A%2Bineednotitle%2FProteus-Patches%0A%60%60%60%0A%0AI+tried+to+open+a+PR%2C+but+my+fine-grained+PAT+cannot+create+forks+%E2%80%94+sorry+for+filing+an+issue+instead.%0A%0AUseful+for+%60scripts%2Fdiscover_github_wide.py%60%3A+GitHub+code+search+currently+returns+%2A%2A0%2A%2A+results+for+this+repository+%28no+file+at+all+is+indexed%29%2C+which+is+why+the+%60filename%3Apatches-bundle.json%60+discovery+has+never+surfaced+it.+A+committed+%60.gradle%2F%60+build+cache+%28540+KB+binary+blobs%2C+69k-character+lines%29+was+the+likely+cause+and+has+just+been+untracked+on+%60main%60%2C+so+it+may+start+appearing+after+the+next+indexing+pass.%0A
 
 ## 4. Discovery checklist
 
