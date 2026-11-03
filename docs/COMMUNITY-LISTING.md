@@ -168,8 +168,20 @@ Done in this PR:
       (`https://morphe.software/add-source?github=ineednotitle/Proteus-Patches`)
       and the plain source URL for manual entry
 - [x] GitHub topics: `morphe`, `morphe-patches`
-- [x] Repo description mentions Morphe (keyword-based crawlers such as
-      awesome-morphe's search for `morphe`)
+- [ ] **You** — set the repo description and topics in
+      **Settings → About** (a `chore`/CI token cannot change these):
+
+      ```text
+      Description: Proteus Patches — a Morphe patch bundle (.mpp) for Android:
+                   removes ads, trackers and annoyances across 23 apps, plus
+                   universal patches.
+
+      Topics:      morphe   morphe-patches   android   patches   privacy
+      ```
+
+      The current description ("Free yourself from Big tech Corporations ")
+      contains no "Morphe", so crawlers that fall back to a keyword search for
+      `morphe` (name/description/readme) rank this repo poorly.
 
 Still open / optional:
 
