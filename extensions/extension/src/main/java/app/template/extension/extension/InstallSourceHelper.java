@@ -1,6 +1,7 @@
 package app.template.extension.extension;
 
 import android.content.pm.InstallSourceInfo;
+import android.os.Build;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -68,7 +69,12 @@ public final class InstallSourceHelper {
                     if (installer != null) return installer;
                 }
                 Object result = method.invoke(realPackageManager, args);
-                if ("getInstallSourceInfo".equals(name) && result instanceof InstallSourceInfo) {
+                // InstallSourceInfo only exists from API 30 — touching the class on an
+                // older device would throw NoClassDefFoundError inside the proxy and
+                // break the PackageManager call itself.
+                if ("getInstallSourceInfo".equals(name)
+                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                        && result instanceof InstallSourceInfo) {
                     spoofInstallSourceInfo((InstallSourceInfo) result);
                 }
                 return result;

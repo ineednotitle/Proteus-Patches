@@ -60,8 +60,9 @@ public class SignatureHookApp extends Application {
             return; // Patch did not run / no certificate available.
         }
 
-        final Signature original = new Signature(
-                Base64.decode(hookSignature, Base64.DEFAULT));
+        // Signature(String) takes the hex form of the DER bytes (the same encoding
+        // toCharsString() returns), so decode the Base64 and re-encode as hex.
+        final Signature original = new Signature(toHex(Base64.decode(hookSignature, Base64.DEFAULT)));
 
         final String target = (hookPackageName == null
                 || hookPackageName.length() == 0
@@ -106,6 +107,17 @@ public class SignatureHookApp extends Application {
             // Ignored: ART does not require this.
         }
         creatorField.set(null, proxyCreator);
+    }
+
+    private static String toHex(byte[] bytes) {
+        char[] hex = new char[bytes.length * 2];
+        char[] digits = "0123456789abcdef".toCharArray();
+        for (int i = 0; i < bytes.length; i++) {
+            int value = bytes[i] & 0xFF;
+            hex[i * 2] = digits[value >>> 4];
+            hex[i * 2 + 1] = digits[value & 0x0F];
+        }
+        return new String(hex);
     }
 
     private static void spoof(PackageInfo info, Signature original, String target) {
