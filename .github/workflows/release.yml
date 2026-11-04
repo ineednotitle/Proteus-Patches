@@ -16,6 +16,7 @@ jobs:
       packages: write
       id-token: write
       attestations: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -79,10 +80,28 @@ jobs:
       # Semantic release runs its own Gradle build command.
       # Only dev and main branch will generate a release as specified by .releaserc
       - name: Release
-        uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
         id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          npx semantic-release 2>&1 | tee semantic-release.log
+
+      # TEMPORARY DEBUG: surface the semantic-release failure, which is otherwise
+      # unreadable. Remove together with the pull-requests: write permission.
+      - name: Report failure log
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "semantic-release failed on \`${GITHUB_REF_NAME}\` (run ${GITHUB_RUN_ID})."
+            echo
+            echo '```'
+            tail -c 50000 semantic-release.log
+            echo '```'
+          } > /tmp/failure.md
+          gh pr comment 3 --body-file /tmp/failure.md || true
 
       - name: Attest
         if: steps.release.outputs.new_release_published == 'true'
