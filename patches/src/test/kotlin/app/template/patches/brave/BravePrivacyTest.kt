@@ -41,7 +41,20 @@ object BravePrivacyTest {
         check(braveShouldKeepLocale("fr_feminine.pak", keep))
         check(!braveShouldKeepLocale("de.pak", keep))
         check(runCatching { braveLocalesToKeep("../oops") }.isFailure)
-        println("Brave helper DEX round trips and locale selection passed")
+        check(canonicalizeHex("#FFF") == "#ffffff")
+        check(canonicalizeHex("#000000") == "#000000")
+        check(canonicalizeHex("#FF0000FF") == null) // alpha not opaque -> rejected
+        check(canonicalizeHex("red") == null)
+        check(isSurfaceCandidate("#121212"))
+        check(!isSurfaceCandidate("#f0f2ff"))
+        check(isLegibleInkColor("#f0f2ff"))
+        val (rewritten, rewriteStats) = rewriteXmlSurfaces(
+            """<resources><color name="bg">#131221</color></resources>""",
+            "#000000", "#000000",
+        )
+        check(rewritten.contains(">#000000<"))
+        check(rewriteStats.baseCount == 1)
+        println("Brave helper DEX round trips, locale selection and theme hex math passed")
     }
 
     private fun fixture(type: String, registers: Int): MutableMethod {
