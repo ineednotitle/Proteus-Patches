@@ -275,7 +275,7 @@ For configuration advice, limitations, and permission-patch examples, see the
 </details>
 
 <details open>
-<summary>📦 Brave Browser&nbsp;&nbsp;•&nbsp;&nbsp;8 patches</summary>
+<summary>📦 Brave Browser&nbsp;&nbsp;•&nbsp;&nbsp;14 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -287,8 +287,14 @@ For configuration advice, limitations, and permission-patch examples, see the
 |----------|----------------|-----------|
 | [Block Motion Sensors](#block-motion-sensors) | Attempts to disable Chromium's Android sensor provider; may also block ambient sensors. Requires device validation. |  |
 | [Block Popups & Ratings](#block-popups-ratings) | Disables the identified rating and Brave Ads signup eligibility checks; other dialogs can still appear. |  |
+| [Block Telemetry](#block-telemetry) | Blocks usage analytics, crash uploads and experiment downloads by redirecting the identified endpoints in libchrome.so to 0.0.0.0 (fixed, pre-validated offsets; aborts rather than write a mismatched binary), strips the Play install-referrer permission, and rewrites the shopping-offers host. Off by default; unverified on device. | • Block offers server (on by default) |
+| [Brave Origin](#brave-origin) | Turns the Brave Origin feature switches (Rewards, News, Wallet, VPN, Leo AI) on by default at the resource layer and neutralizes the identified policy gatekeepers and the Leo AI feature flag in bytecode so the switches stick. Off by default; unverified on device. |  |
+| [Clean New Tab](#clean-new-tab) | Forces the sponsored Brave news/stats preference defaults off at runtime (NTP gate preference getters and listeners, layout initialization) so sponsored surfaces do not render. Off by default; unverified on device. | • Hide shortcut tiles |
+| [Close Tab In Group Order](#close-tab-in-group-order) | Preselects the previous tab in the same tab group when the active tab is closed; bulk closes and other flows fall back to stock behavior. Off by default; unverified on device. |  |
+| [Custom Brave theme](#custom-brave-theme) | Applies custom colors to Brave's dark chrome — background, surfaces, text ink and accent — by rewriting palette, Material You role and vector-drawable colors. Defaults to pure OLED black. Off by default; unverified on device. | • Background color<br>• Surfaces use background color<br>• Surface / container color<br>• Text ink color<br>• Accent highlight color<br>• Disable Material You dynamic colors<br>• Window background color<br>• Preference card color<br>• Style preference rows as cards<br>• Modulate text tiers by luminance<br>• Patch Material You system color roles<br>• Patch color state list lStar selectors<br>• Patch vector drawable surface fills |
 | [Preserve last active tab](#preserve-last-active-tab) | Disables the identified new-tab opening-screen override after inactivity. Does not prevent tab unloading under memory pressure. |  |
 | [Remove Extra Languages](#remove-extra-languages) | Replaces larger unselected Chromium locale PAKs with the English fallback; gender variants and Android resources are not removed. | • Languages to keep |
+| [Remove Unused AI & VPN](#remove-unused-ai-vpn) | Zeroes the unused AR/XR native libraries to shrink the APK (the name says AI; the bloat is AR/XR). Option also stubs the `libwg-go.so` WireGuard backend, disabling Brave VPN. Off by default; unverified on device. | • Remove VPN library |
 | [Skip Welcome Screens](#skip-welcome-screens) | Reports the first-run flow complete; may skip essential consent, search or setup screens. |  |
 | [Stop Background Wakeups](#stop-background-wakeups) | Disables the identified Chromium background-sync scheduler gate; other wakeups remain and site background sync can break. |  |
 | [Stop Promo Notifications](#stop-promo-notifications) | Disables identified Chromium tips and retention notification entry points; other notifications may remain. |  |
