@@ -43,7 +43,8 @@ object BravePrivacyTest {
         check(runCatching { braveLocalesToKeep("../oops") }.isFailure)
         check(canonicalizeHex("#FFF") == "#ffffff")
         check(canonicalizeHex("#000000") == "#000000")
-        check(canonicalizeHex("#FF0000FF") == null) // alpha not opaque -> rejected
+        check(canonicalizeHex("#FF0000FF") == "#0000ff") // opaque alpha flattens to 6-hex
+        check(canonicalizeHex("#80FF0000") == null) // non-opaque alpha rejected
         check(canonicalizeHex("red") == null)
         check(isSurfaceCandidate("#121212"))
         check(!isSurfaceCandidate("#f0f2ff"))
