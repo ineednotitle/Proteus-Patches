@@ -3,7 +3,7 @@
 > *One bundle, patches everywhere. A curated [Morphe](https://github.com/MorpheApp/Morphe) patch suite for Android.*
 
 [![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-green.svg)](#license)
-[![Patches](https://img.shields.io/badge/patches-155-blue.svg)](#whats-inside)
+[![Patches](https://img.shields.io/badge/patches-161-blue.svg)](#whats-inside)
 [![Universal patches](https://img.shields.io/badge/universal-24-purple.svg)](#universal-patches)
 [![Apps](https://img.shields.io/badge/apps-28-orange.svg)](#supported-apps)
 
@@ -11,7 +11,7 @@
 ads, annoyances and risky defaults from popular Android apps — plus a set of
 **universal patches** that apply to any app.
 
-- **[v2.2.6](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.2.6)** — pre-release: fixes the Brave `INSTALL_FAILED_NO_MATCHING_ABIS` install failure on 16 KB devices (`extractNativeLibs=true`); includes the Reddit "Show deleted comments" patch; see [limitations](docs/BRAVE.md) and [the Reddit doc](docs/REDDIT-DELETED-COMMENTS.md)
+- **[v2.2.7](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.2.7)** — pre-release: adds six experimental, off-by-default Brave patches (Remove Unused AI & VPN, Block Telemetry, Clean New Tab, Close Tab In Group Order, Brave Origin, Custom Brave theme; adapted from kveld9/kveld-morphe-patches, unverified on device); broadens Block AutoMod comments detection and adds logging; "Show deleted comments" now logs archive lookup outcomes. See [limitations](docs/BRAVE.md) and [the Reddit doc](docs/REDDIT-DELETED-COMMENTS.md)
 - Built and verified with the Morphe Manager v2.3.0 patcher (`patches-list.json` regenerated, zip integrity checked)
 
 [![Add to Morphe](https://img.shields.io/badge/Add_to-Morphe-1f6feb?style=for-the-badge)](https://morphe.software/add-source?github=ineednotitle/Proteus-Patches)
@@ -63,7 +63,7 @@ For configuration advice, limitations, and permission-patch examples, see the
 > if you need the full app set.
 
 <!-- PATCHES_START EXPANDED -->
-> **[v2.2.6](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.2.6)**&nbsp;&nbsp;•&nbsp;&nbsp;`arena/4877b858-proteus-patches`&nbsp;&nbsp;•&nbsp;&nbsp;155 patches total
+> **[v2.2.7](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.2.7)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;161 patches total
 <details open>
 <summary>📦 Google Photos&nbsp;&nbsp;•&nbsp;&nbsp;7 patches</summary>
 <br>
@@ -287,14 +287,14 @@ For configuration advice, limitations, and permission-patch examples, see the
 |----------|----------------|-----------|
 | [Block Motion Sensors](#block-motion-sensors) | Attempts to disable Chromium's Android sensor provider; may also block ambient sensors. Requires device validation. |  |
 | [Block Popups & Ratings](#block-popups-ratings) | Disables the identified rating and Brave Ads signup eligibility checks; other dialogs can still appear. |  |
-| [Block Telemetry](#block-telemetry) | Blocks usage analytics, crash uploads and experiment downloads by redirecting the identified endpoints in libchrome.so to 0.0.0.0 (fixed, pre-validated offsets; aborts rather than write a mismatched binary), strips the Play install-referrer permission, and rewrites the shopping-offers host. Off by default; unverified on device. | • Block offers server (on by default) |
-| [Brave Origin](#brave-origin) | Turns the Brave Origin feature switches (Rewards, News, Wallet, VPN, Leo AI) on by default at the resource layer and neutralizes the identified policy gatekeepers and the Leo AI feature flag in bytecode so the switches stick. Off by default; unverified on device. |  |
-| [Clean New Tab](#clean-new-tab) | Forces the sponsored Brave news/stats preference defaults off at runtime (NTP gate preference getters and listeners, layout initialization) so sponsored surfaces do not render. Off by default; unverified on device. | • Hide shortcut tiles |
-| [Close Tab In Group Order](#close-tab-in-group-order) | Preselects the previous tab in the same tab group when the active tab is closed; bulk closes and other flows fall back to stock behavior. Off by default; unverified on device. |  |
-| [Custom Brave theme](#custom-brave-theme) | Applies custom colors to Brave's dark chrome — background, surfaces, text ink and accent — by rewriting palette, Material You role and vector-drawable colors. Defaults to pure OLED black. Off by default; unverified on device. | • Background color<br>• Surfaces use background color<br>• Surface / container color<br>• Text ink color<br>• Accent highlight color<br>• Disable Material You dynamic colors<br>• Window background color<br>• Preference card color<br>• Style preference rows as cards<br>• Modulate text tiers by luminance<br>• Patch Material You system color roles<br>• Patch color state list lStar selectors<br>• Patch vector drawable surface fills |
+| [Block Telemetry](#block-telemetry) | Blocks usage analytics, crash uploads and experiment downloads. | • Block offers server |
+| [Brave Origin](#brave-origin) | Unlocks Brave Origin feature switches across Rewards, News, Wallet, and VPN. |  |
+| [Clean New Tab](#clean-new-tab) | Removes sponsored wallpapers, news feed and promo cards. | • Hide shortcut tiles |
+| [Close Tab In Group Order](#close-tab-in-group-order) | Selects the previous tab in the tab group when closing a tab. |  |
+| [Custom Brave theme](#custom-brave-theme) | Applies custom colors to Brave dark mode chrome, defaulting to pure OLED black for battery saving on OLED screens. | • Background color<br>• Surfaces use background color<br>• Surface / container color<br>• Text ink color<br>• Accent highlight color<br>• Disable Material You dynamic colors<br>• Window background color<br>• Preference card color<br>• Style preference rows as cards<br>• Modulate text tiers by luminance<br>• Patch Material You system color roles<br>• Patch color state list lStar selectors<br>• Patch vector drawable surface fills |
 | [Preserve last active tab](#preserve-last-active-tab) | Disables the identified new-tab opening-screen override after inactivity. Does not prevent tab unloading under memory pressure. |  |
 | [Remove Extra Languages](#remove-extra-languages) | Replaces larger unselected Chromium locale PAKs with the English fallback; gender variants and Android resources are not removed. | • Languages to keep |
-| [Remove Unused AI & VPN](#remove-unused-ai-vpn) | Zeroes the unused AR/XR native libraries to shrink the APK (the name says AI; the bloat is AR/XR). Option also stubs the `libwg-go.so` WireGuard backend, disabling Brave VPN. Off by default; unverified on device. | • Remove VPN library |
+| [Remove Unused AI & VPN](#remove-unused-ai-vpn) | Deletes unused AR and XR files to shrink the app. | • Remove VPN library |
 | [Skip Welcome Screens](#skip-welcome-screens) | Reports the first-run flow complete; may skip essential consent, search or setup screens. |  |
 | [Stop Background Wakeups](#stop-background-wakeups) | Disables the identified Chromium background-sync scheduler gate; other wakeups remain and site background sync can break. |  |
 | [Stop Promo Notifications](#stop-promo-notifications) | Disables identified Chromium tips and retention notification entry points; other notifications may remain. |  |
