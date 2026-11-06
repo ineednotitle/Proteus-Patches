@@ -19,10 +19,14 @@ jobs:
           java-version: '21'
 
       - name: Run unit tests
-        run: chmod +x gradlew && ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy
+        run: chmod +x gradlew && ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build .mpp
-        run: ./gradlew generatePatchesList buildAndroid
+        run: ./gradlew generatePatchesList buildAndroid --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify .mpp and patch bundle metadata
         run: |
