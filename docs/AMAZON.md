@@ -1,12 +1,14 @@
 # Amazon — patch status and issue responses
 
-Applies to **Amazon Shopping** `com.amazon.mShop.android.shopping` and
-**Amazon India** `in.amazon.mShop.android.shopping` (XAPK splits).
+Applies to **Amazon Shopping** `com.amazon.mShop.android.shopping`,
+**Amazon Business** `com.amazon.mShop.android.business.shopping`, and
+**Amazon India** `in.amazon.mShop.android.shopping` (XAPK/APKM splits).
 
 ## Patches in the bundle
 
 | Patch | Default (v2.2.9 re-cut) | Scope |
 |---|---|---|
+| Disable screenshot detection | ON | Drops `Activity.registerScreenCaptureCallback` and `unregisterScreenCaptureCallback` invoke calls across all classes (removes Android 14+ screenshot share bottom sheet). |
 | Dark mode | ON | AMOLED resource pass — **android:-framework attributes only** (hard "Unknown attribute name: colorSurface" guard, same class of fix as Google Photos) + WebView CSS injection |
 | Disable video autoplay | ON | **WebView media-gesture gate only** (MShopWebView.initialize) — in-app web pages, not feed video |
 | **Amazon: Stop feed video autoplay** | off — NEW | Native ExoPlayer/Media3 players (home-feed live video units); same setPlayWhenReady(true)→false heuristic as the universal patch. See issue #21 |

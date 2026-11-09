@@ -2,6 +2,7 @@ package app.template.patches.amazon.disableautoplay
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
+import app.template.patches.shared.Constants.AMAZON_BUSINESS_COMPATIBILITY
 import app.template.patches.shared.Constants.AMAZON_IN_COMPATIBILITY
 import app.template.patches.shared.Constants.AMAZON_SHOPPING_COMPATIBILITY
 
@@ -20,7 +21,7 @@ val amazonDisableVideoAutoplayPatch = bytecodePatch(
     description = "Prevents videos from autoplaying in Amazon's in-app WebView pages.",
     default = true,
 ) {
-    compatibleWith(AMAZON_SHOPPING_COMPATIBILITY, AMAZON_IN_COMPATIBILITY)
+    compatibleWith(AMAZON_SHOPPING_COMPATIBILITY, AMAZON_BUSINESS_COMPATIBILITY, AMAZON_IN_COMPATIBILITY)
 
     execute {
         MShopWebViewInitializeFingerprint.method.addInstructions(

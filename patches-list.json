@@ -147,6 +147,114 @@
       "options": []
     },
     {
+      "name": "Amazon: Stop feed video autoplay",
+      "description": "Stops Amazon's home-feed native video units (live promotional videos,\nreview carousels, sponsored reels) from starting on their own, using\nthe same setPlayWhenReady(true) → false heuristic as the universal\n'Disable video autoplay (ExoPlayer/Media3)' patch.\n\nCovers native ExoPlayer/Media3 players only — NOT the in-app WebView\npages (use the default-on 'Disable video autoplay' patch for those),\nand NOT WebView CSS-injected ad blocks (use 'Remove ads'). Heuristic:\nreflection or obfuscated player setup is not covered. Can stop playback\nentirely in apps whose only play path is a flipped literal call — turn\nit off if videos never start. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.amazon.mShop.android.shopping",
+          "name": "Amazon Shopping",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.18.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243240206,
+                "ARMEABI_V7A": 1243240206,
+                "X86_64": 1243240206,
+                "X86": 1243240206
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "in.amazon.mShop.android.shopping",
+          "name": "Amazon India",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.18.0.300",
+              "versionCodes": {
+                "ARM64_V8A": 1243240206,
+                "ARMEABI_V7A": 1243240206,
+                "X86_64": 1243240206,
+                "X86": 1243240206
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.300",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Anti-delete messages",
       "description": "Prevents messages deleted by other users from being removed locally.",
       "default": true,
@@ -1152,7 +1260,7 @@
     },
     {
       "name": "Bypass native integrity checks",
-      "description": "libunnamed_raw.so JNI-throws 'app integrity check failed' on re-signed builds, killing camera session start (preview) - observed via diagnostic crash log. This patch catches the throw at the session-opening wrapper and substitutes a valid session result. Required together with 'Allow re-signed/sideloaded installs'.",
+      "description": "libunnamed_raw.so JNI-throws 'app integrity check failed' on re-signed builds, killing camera session start (preview) - observed via diagnostic crash log. This patch calls the session-opening wrapper inside a real JVM try/catch (extension) and substitutes a well-formed session result on failure. Required together with 'Allow re-signed/sideloaded installs'.",
       "default": true,
       "dependencies": [],
       "compatiblePackages": [
@@ -1548,7 +1656,7 @@
           "key": "backgroundColor",
           "title": "Background color",
           "description": "Opaque hexadecimal color for primary backgrounds and base window chrome. Defaults to pure OLED black (#000000).",
-          "required": false,
+          "required": true,
           "type": "kotlin.String",
           "default": "#000000",
           "values": null
@@ -1575,7 +1683,7 @@
           "key": "textColor",
           "title": "Text ink color",
           "description": "Opaque hexadecimal color applied to primary text labels. Defaults to Brave light slate ink (#f0f2ff).",
-          "required": false,
+          "required": true,
           "type": "kotlin.String",
           "default": "#f0f2ff",
           "values": null
@@ -1584,7 +1692,7 @@
           "key": "accentColor",
           "title": "Accent highlight color",
           "description": "Opaque hexadecimal color for interactive highlights, active switches, and links. Defaults to Brave purple-blue accent (#737ade).",
-          "required": false,
+          "required": true,
           "type": "kotlin.String",
           "default": "#737ade",
           "values": null
@@ -1728,6 +1836,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -2124,6 +2273,112 @@
       "options": []
     },
     {
+      "name": "Disable screenshot detection",
+      "description": "Prevents the app from detecting screenshots and displaying the share popup on Android 14+.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.amazon.mShop.android.shopping",
+          "name": "Amazon Shopping",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.18.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243240206,
+                "ARMEABI_V7A": 1243240206,
+                "X86_64": 1243240206,
+                "X86": 1243240206
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "in.amazon.mShop.android.shopping",
+          "name": "Amazon India",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.18.0.300",
+              "versionCodes": {
+                "ARM64_V8A": 1243240206,
+                "ARMEABI_V7A": 1243240206,
+                "X86_64": 1243240206,
+                "X86": 1243240206
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.300",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Disable search suggestions tracking",
       "description": "Prevents search keypress and focus events from being sent with suggestion requests.",
       "default": true,
@@ -2145,6 +2400,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -2213,6 +2509,47 @@
               "isExperimental": false,
               "minSdk": null,
               "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
             }
           ]
         },
@@ -2251,6 +2588,14 @@
           ]
         }
       ],
+      "options": []
+    },
+    {
+      "name": "Disable video autoplay (ExoPlayer/Media3)",
+      "description": "Stops ExoPlayer/Media3 players from starting on their own by flipping\nliteral 'setPlayWhenReady(true)' call sites to false.\n\nApplies to any app bundling ExoPlayer/Media3. Heuristic: reflection or\nobfuscated player setup is not covered. Can stop playback entirely in\napps whose only play path is a flipped literal call — turn it off if\nvideos never start. Applies best alongside the per-app Mint/HT entries.\nUnverified on device.",
+      "default": false,
+      "dependencies": [],
+      "compatiblePackages": null,
       "options": []
     },
     {
@@ -2564,6 +2909,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -2890,6 +3276,47 @@
               "isExperimental": false,
               "minSdk": null,
               "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
             }
           ]
         },
@@ -3016,6 +3443,90 @@
       "options": []
     },
     {
+      "name": "Hindustan Times: Block analytics & tracking SDKs",
+      "description": "Blocks Hindustan Times' analytics & tracking SDKs (Firebase Analytics,\nAppsFlyer, Adjust, WebEngage, CleverTap and similar) using the same universal\nheuristic as 'Block analytics & tracking SDKs'.\n\nApplies to com.ht.news only. Heuristic; obfuscated or reflection-based\nreporting is not covered. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.ht.news",
+          "name": "Hindustan Times",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": "#0C5594",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "4.9.16",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Hindustan Times: Disable video autoplay (ExoPlayer)",
+      "description": "Stops video autoplay in the Hindustan Times feed/article bodies\n(ExoPlayer/Media3) using the same heuristic as 'Disable video autoplay\n(ExoPlayer/Media3)'.\n\nApplies to com.ht.news only. Heuristic; see the universal entry for\nlimitations. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.ht.news",
+          "name": "Hindustan Times",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": "#0C5594",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "4.9.16",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Hindustan Times: Prefer external browser over Custom Tabs",
+      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.ht.news only. Some article WebViews are not affected —\nthis covers Custom Tabs / CustomTabsIntent call sites only.\nUnverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.ht.news",
+          "name": "Hindustan Times",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": "#0C5594",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "4.9.16",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Improve startup performance",
       "description": "Skips two launch-time routines whose only job is metrics/experiments upkeep: the 4k-line startup-metrics coroutine (pure telemetry writes, ~64 metric writes per launch) and the forced Nimbus experiment fetch right after first render. Less launch I/O = faster, smoother open/close. Browser features unchanged.",
       "default": true,
@@ -3086,6 +3597,324 @@
       "options": []
     },
     {
+      "name": "Meesho: Block analytics & tracking SDKs",
+      "description": "Blocks Meesho's analytics & tracking SDKs (Firebase Analytics, AppsFlyer,\nAdjust, Facebook AppEvents, WebEngage, CleverTap and similar) using the\nsame universal heuristic as 'Block analytics & tracking SDKs'.\n\nApplies to com.meesho.shopping only. Heuristic; obfuscated or\nreflection-based reporting is not covered. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.meesho.shopping",
+          "name": "Meesho",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#F43397",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "29.9",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.8",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.7",
+              "versionCodes": {
+                "ARM64_V8A": 872,
+                "ARMEABI_V7A": 872,
+                "X86_64": 872,
+                "X86": 872
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.6",
+              "versionCodes": {
+                "ARM64_V8A": 870,
+                "ARMEABI_V7A": 870,
+                "X86_64": 870,
+                "X86": 870
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.5",
+              "versionCodes": {
+                "ARM64_V8A": 868,
+                "ARMEABI_V7A": 868,
+                "X86_64": 868,
+                "X86": 868
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Meesho: Disable video autoplay (ExoPlayer)",
+      "description": "Stops video autoplay in the Meesho feed and product videos (ExoPlayer/Media3)\nusing the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.\n\nApplies to com.meesho.shopping only. Heuristic; see the universal entry\nfor limitations. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.meesho.shopping",
+          "name": "Meesho",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#F43397",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "29.9",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.8",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.7",
+              "versionCodes": {
+                "ARM64_V8A": 872,
+                "ARMEABI_V7A": 872,
+                "X86_64": 872,
+                "X86": 872
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.6",
+              "versionCodes": {
+                "ARM64_V8A": 870,
+                "ARMEABI_V7A": 870,
+                "X86_64": 870,
+                "X86": 870
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.5",
+              "versionCodes": {
+                "ARM64_V8A": 868,
+                "ARMEABI_V7A": 868,
+                "X86_64": 868,
+                "X86": 868
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Meesho: Prefer external browser over Custom Tabs",
+      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.meesho.shopping only. Covers Custom Tabs /\nCustomTabsIntent call sites only. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.meesho.shopping",
+          "name": "Meesho",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#F43397",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "29.9",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.8",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.7",
+              "versionCodes": {
+                "ARM64_V8A": 872,
+                "ARMEABI_V7A": 872,
+                "X86_64": 872,
+                "X86": 872
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.6",
+              "versionCodes": {
+                "ARM64_V8A": 870,
+                "ARMEABI_V7A": 870,
+                "X86_64": 870,
+                "X86": 870
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "29.5",
+              "versionCodes": {
+                "ARM64_V8A": 868,
+                "ARMEABI_V7A": 868,
+                "X86_64": 868,
+                "X86": 868
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Mint: Block analytics & tracking SDKs",
+      "description": "Blocks Mint's analytics & tracking SDKs (Firebase Analytics, AppsFlyer, Adjust,\nWebEngage, CleverTap and similar) using the same universal heuristic as\n'Block analytics & tracking SDKs'.\n\nApplies to com.htmedia.mint only. Heuristic; obfuscated or reflection-based\nreporting is not covered. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.htmedia.mint",
+          "name": "Mint",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": "#E01F26",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "5.7.5",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "5.8.4",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Mint: Disable video autoplay (ExoPlayer)",
+      "description": "Stops video autoplay in the Mint feed/article bodies (ExoPlayer/Media3)\nusing the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.\n\nApplies to com.htmedia.mint only. Heuristic; see the universal entry for\nlimitations. Unverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.htmedia.mint",
+          "name": "Mint",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": "#E01F26",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "5.7.5",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "5.8.4",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Mint: Prefer external browser over Custom Tabs",
+      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.htmedia.mint only. Some article WebViews are not affected\n— this covers Custom Tabs / CustomTabsIntent call sites only.\nUnverified on device.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.htmedia.mint",
+          "name": "Mint",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": "#E01F26",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "5.7.5",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "5.8.4",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Offline-only voice typing & telemetry reduction",
       "description": "On Gboard 18.5.4.993608717 arm64, routes core voice typing only through the on-device\nrecognizers and returns no recognizer when a local provider/model is unavailable (no\nonline fallback). Disables Agentic Dictation's server/batch retry path, reduces selected\nmetrics/telemetry and disables app backup. INTERNET and unrelated network features are\nretained; this is best-effort telemetry reduction, not a guarantee of zero Google traffic.\n\nRequires the appropriate offline speech model/provider to be installed. Without one,\nvoice typing is unavailable by design. Agentic Dictation is disabled.",
       "default": false,
@@ -3140,6 +3969,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -3331,6 +4201,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -3633,6 +4544,69 @@
       ]
     },
     {
+      "name": "Reddit: Diagnostic crash log",
+      "description": "DIAGNOSTIC ONLY - writes the full stack trace to Downloads/reddit-crash-*.txt when the app crashes, for remote diagnosis. Off by default; enable when asked to produce a crash log. Installs on the first account sync after launch; crashes before that are not captured. Chain-forwards to the original crash handler.",
+      "default": false,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.reddit.frontpage",
+          "name": "Reddit",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF4500",
+          "signatures": [
+            "970b91143813b4c9d5f3634f672c9fcaa5621b4efaaedafd6c235cbbb869736f"
+          ],
+          "targets": [
+            {
+              "version": "2026.42.0",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": 29,
+              "description": null
+            },
+            {
+              "version": "2026.41.0",
+              "versionCodes": null,
+              "isExperimental": true,
+              "minSdk": 29,
+              "description": null
+            },
+            {
+              "version": "2026.40.0",
+              "versionCodes": null,
+              "isExperimental": true,
+              "minSdk": 29,
+              "description": null
+            },
+            {
+              "version": "2026.39.0",
+              "versionCodes": null,
+              "isExperimental": true,
+              "minSdk": 29,
+              "description": null
+            },
+            {
+              "version": "2026.24.0",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": 29,
+              "description": null
+            },
+            {
+              "version": "2026.10.0",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": 28,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Remove Extra Languages",
       "description": "Replaces larger unselected Chromium locale PAKs with the English fallback; gender variants and Android resources are not removed.",
       "default": false,
@@ -3730,6 +4704,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -5515,546 +6530,6 @@
       "default": false,
       "dependencies": [],
       "compatiblePackages": null,
-      "options": []
-    },
-    {
-      "name": "Mint: Block analytics & tracking SDKs",
-      "description": "Blocks Mint's analytics & tracking SDKs (Firebase Analytics, AppsFlyer, Adjust,\nWebEngage, CleverTap and similar) using the same universal heuristic as\n'Block analytics & tracking SDKs'.\n\nApplies to com.htmedia.mint only. Heuristic; obfuscated or reflection-based\nreporting is not covered. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Block analytics & tracking SDKs"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.htmedia.mint",
-          "name": "Mint",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#E01F26",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "5.7.5",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            },
-            {
-              "version": "5.8.4",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Hindustan Times: Block analytics & tracking SDKs",
-      "description": "Blocks Hindustan Times' analytics & tracking SDKs (Firebase Analytics,\nAppsFlyer, Adjust, WebEngage, CleverTap and similar) using the same universal\nheuristic as 'Block analytics & tracking SDKs'.\n\nApplies to com.ht.news only. Heuristic; obfuscated or reflection-based\nreporting is not covered. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Block analytics & tracking SDKs"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.ht.news",
-          "name": "Hindustan Times",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#0C5594",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "4.9.16",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Disable video autoplay (ExoPlayer/Media3)",
-      "description": "Stops ExoPlayer/Media3 players from starting on their own by flipping\nliteral 'setPlayWhenReady(true)' call sites to false.\n\nApplies to any app bundling ExoPlayer/Media3. Heuristic: reflection or\nobfuscated player setup is not covered. Can stop playback entirely in\napps whose only play path is a flipped literal call — turn it off if\nvideos never start. Applies best alongside the per-app Mint/HT entries.\nUnverified on device.",
-      "default": false,
-      "dependencies": [],
-      "compatiblePackages": null,
-      "options": []
-    },
-    {
-      "name": "Mint: Disable video autoplay (ExoPlayer)",
-      "description": "Stops video autoplay in the Mint feed/article bodies (ExoPlayer/Media3)\nusing the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.\n\nApplies to com.htmedia.mint only. Heuristic; see the universal entry for\nlimitations. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Disable video autoplay (ExoPlayer/Media3)"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.htmedia.mint",
-          "name": "Mint",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#E01F26",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "5.7.5",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            },
-            {
-              "version": "5.8.4",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Hindustan Times: Disable video autoplay (ExoPlayer)",
-      "description": "Stops video autoplay in the Hindustan Times feed/article bodies\n(ExoPlayer/Media3) using the same heuristic as 'Disable video autoplay\n(ExoPlayer/Media3)'.\n\nApplies to com.ht.news only. Heuristic; see the universal entry for\nlimitations. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Disable video autoplay (ExoPlayer/Media3)"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.ht.news",
-          "name": "Hindustan Times",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#0C5594",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "4.9.16",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Mint: Prefer external browser over Custom Tabs",
-      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.htmedia.mint only. Some article WebViews are not affected\n— this covers Custom Tabs / CustomTabsIntent call sites only.\nUnverified on device.",
-      "default": false,
-      "dependencies": [
-        "Prefer external browser over Custom Tabs"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.htmedia.mint",
-          "name": "Mint",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#E01F26",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "5.7.5",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            },
-            {
-              "version": "5.8.4",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Hindustan Times: Prefer external browser over Custom Tabs",
-      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.ht.news only. Some article WebViews are not affected —\nthis covers Custom Tabs / CustomTabsIntent call sites only.\nUnverified on device.",
-      "default": false,
-      "dependencies": [
-        "Prefer external browser over Custom Tabs"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.ht.news",
-          "name": "Hindustan Times",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#0C5594",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "4.9.16",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 26,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Meesho: Block analytics & tracking SDKs",
-      "description": "Blocks Meesho's analytics & tracking SDKs (Firebase Analytics, AppsFlyer,\nAdjust, Facebook AppEvents, WebEngage, CleverTap and similar) using the\nsame universal heuristic as 'Block analytics & tracking SDKs'.\n\nApplies to com.meesho.shopping only. Heuristic; obfuscated or\nreflection-based reporting is not covered. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Block analytics & tracking SDKs"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.meesho.shopping",
-          "name": "Meesho",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#F43397",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "29.9",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.8",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.7",
-              "versionCodes": {
-                "ARM64_V8A": 872,
-                "ARMEABI_V7A": 872,
-                "X86_64": 872,
-                "X86": 872
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.6",
-              "versionCodes": {
-                "ARM64_V8A": 870,
-                "ARMEABI_V7A": 870,
-                "X86_64": 870,
-                "X86": 870
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.5",
-              "versionCodes": {
-                "ARM64_V8A": 868,
-                "ARMEABI_V7A": 868,
-                "X86_64": 868,
-                "X86": 868
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Meesho: Disable video autoplay (ExoPlayer)",
-      "description": "Stops video autoplay in the Meesho feed and product videos (ExoPlayer/Media3)\nusing the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.\n\nApplies to com.meesho.shopping only. Heuristic; see the universal entry\nfor limitations. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Disable video autoplay (ExoPlayer/Media3)"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.meesho.shopping",
-          "name": "Meesho",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#F43397",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "29.9",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.8",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.7",
-              "versionCodes": {
-                "ARM64_V8A": 872,
-                "ARMEABI_V7A": 872,
-                "X86_64": 872,
-                "X86": 872
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.6",
-              "versionCodes": {
-                "ARM64_V8A": 870,
-                "ARMEABI_V7A": 870,
-                "X86_64": 870,
-                "X86": 870
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.5",
-              "versionCodes": {
-                "ARM64_V8A": 868,
-                "ARMEABI_V7A": 868,
-                "X86_64": 868,
-                "X86": 868
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Meesho: Prefer external browser over Custom Tabs",
-      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.meesho.shopping only. Covers Custom Tabs /\nCustomTabsIntent call sites only. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Prefer external browser over Custom Tabs"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.meesho.shopping",
-          "name": "Meesho",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#F43397",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "29.9",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.8",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.7",
-              "versionCodes": {
-                "ARM64_V8A": 872,
-                "ARMEABI_V7A": 872,
-                "X86_64": 872,
-                "X86": 872
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.6",
-              "versionCodes": {
-                "ARM64_V8A": 870,
-                "ARMEABI_V7A": 870,
-                "X86_64": 870,
-                "X86": 870
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            },
-            {
-              "version": "29.5",
-              "versionCodes": {
-                "ARM64_V8A": 868,
-                "ARMEABI_V7A": 868,
-                "X86_64": 868,
-                "X86": 868
-              },
-              "isExperimental": false,
-              "minSdk": 21,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Reddit: Diagnostic crash log",
-      "description": "DIAGNOSTIC ONLY - writes the full stack trace to Downloads/reddit-crash-*.txt when the app crashes, for remote diagnosis. Off by default; enable when asked to produce a crash log. Installs on the first account sync after launch; crashes before that are not captured. Chain-forwards to the original crash handler.",
-      "default": false,
-      "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.reddit.frontpage",
-          "name": "Reddit",
-          "description": null,
-          "apkFileType": "APKM",
-          "appIconColor": "#FF4500",
-          "signatures": [
-            "970b91143813b4c9d5f3634f672c9fcaa5621b4efaaedafd6c235cbbb869736f"
-          ],
-          "targets": [
-            {
-              "version": "2026.42.0",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 29,
-              "description": null
-            },
-            {
-              "version": "2026.41.0",
-              "versionCodes": null,
-              "isExperimental": true,
-              "minSdk": 29,
-              "description": null
-            },
-            {
-              "version": "2026.40.0",
-              "versionCodes": null,
-              "isExperimental": true,
-              "minSdk": 29,
-              "description": null
-            },
-            {
-              "version": "2026.39.0",
-              "versionCodes": null,
-              "isExperimental": true,
-              "minSdk": 29,
-              "description": null
-            },
-            {
-              "version": "2026.24.0",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 29,
-              "description": null
-            },
-            {
-              "version": "2026.10.0",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": 28,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Amazon: Stop feed video autoplay",
-      "description": "Stops Amazon's home-feed native video units (live promotional videos,\nreview carousels, sponsored reels) from starting on their own, using\nthe same setPlayWhenReady(true) → false heuristic as the universal\n'Disable video autoplay (ExoPlayer/Media3)' patch.\n\nCovers native ExoPlayer/Media3 players only — NOT the in-app WebView\npages (use the default-on 'Disable video autoplay' patch for those),\nand NOT WebView CSS-injected ad blocks (use 'Remove ads'). Heuristic:\nreflection or obfuscated player setup is not covered. Can stop playback\nentirely in apps whose only play path is a flipped literal call — turn\nit off if videos never start. Unverified on device.",
-      "default": false,
-      "dependencies": [
-        "Disable video autoplay (ExoPlayer/Media3)"
-      ],
-      "compatiblePackages": [
-        {
-          "packageName": "com.amazon.mShop.android.shopping",
-          "name": "Amazon Shopping",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#FF9900",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "32.18.0.100",
-              "versionCodes": {
-                "ARM64_V8A": 1243240206,
-                "ARMEABI_V7A": 1243240206,
-                "X86_64": 1243240206,
-                "X86": 1243240206
-              },
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        },
-        {
-          "packageName": "in.amazon.mShop.android.shopping",
-          "name": "Amazon India",
-          "description": null,
-          "apkFileType": "XAPK",
-          "appIconColor": "#FF9900",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "32.18.0.300",
-              "versionCodes": {
-                "ARM64_V8A": 1243240206,
-                "ARMEABI_V7A": 1243240206,
-                "X86_64": 1243240206,
-                "X86": 1243240206
-              },
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            },
-            {
-              "version": "32.19.0.300",
-              "versionCodes": {
-                "ARM64_V8A": 1243250306,
-                "ARMEABI_V7A": 1243250306,
-                "X86_64": 1243250306,
-                "X86": 1243250306
-              },
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
       "options": []
     }
   ]
