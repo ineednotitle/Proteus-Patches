@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-11T12:23:44",
-  "description": "v2.2.10 (pre-release re-cut #5; replaces the earlier v2.2.10 assets). Universal patches: removed Clone app, Force not debuggable and Lock down exported components; hid Spoof app signature and Spoof install source as internal dependencies; merged the three WebView patches into WebView hardening (adds autoplay, geolocation, third-party cookie and popup switches); added Block advertising & device IDs, Block in-app update & review prompts, Block crash-reporting SDKs, Force offline mode and Block Play Billing purchase prompts. Gboard 18.5.4 adds an ARM target, offline-only voice routing, stricter privacy defaults, telemetry/backup hardening and an optional Bluetooth voice-routing disable patch. Proton Pass 1.41.3 adds F-Droid support plus screenshots, clipboard auto-clear, app-lock and telemetry patches. Verified by building the Android bundle, applying the new patches to the F-Droid Proton Pass APK and armeabi-v7a Gboard APK, running the permission and Brave test tasks, and regenerating patches-list.json/README; no on-device runtime verification yet. 145 patch entries / 187 appearances / 32 apps.",
-  "download_url": "https://github.com/ineednotitle/Proteus-Patches/releases/download/v2.2.10/patches-2.2.10.mpp",
+  "created_at": "2026-11-12T16:29:17",
+  "description": "## [2.3.0](https://github.com/[secure]/Proteus-Patches/compare/v2.2.10...v2.3.0) (2026-11-12)\n\n### ✨ New Features\n\n* **release:** expand Proton Pass and Gboard patches for v2.2.10 ([2de3200](https://github.com/[secure]/Proteus-Patches/commit/2de3200757447185ba8eaa9dd127d85e4d807b2c))",
+  "download_url": "https://github.com/ineednotitle/Proteus-Patches/releases/download/v2.3.0/patches-2.3.0.mpp",
   "signature_download_url": "",
-  "version": "2.2.10"
+  "version": "2.3.0"
 }
