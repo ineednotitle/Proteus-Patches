@@ -28,14 +28,28 @@ https://github.com/ineednotitle/Proteus-Patches
 
 ## Contents
 
+- [Support](#support)
 - [Install](#install)
 - [What's inside](#whats-inside)
 - [Safety](#safety)
 - [Documentation](#documentation)
 - [Build from source](#build-from-source)
 - [Contributing](#contributing)
-- [Support](#support)
 - [License](#license)
+
+## Support
+
+If these patches save you time or make an app more usable, you can support
+ongoing development:
+
+<p align="center">
+  <a href="https://liberapay.com/ineednotitle"><img alt="Donate via Liberapay" src="https://img.shields.io/badge/Liberapay-Donate-F6C915?style=for-the-badge&logo=liberapay&logoColor=black"></a>
+  <a href="https://ko-fi.com/A1A62AJ2Q8"><img alt="Support me on Ko-fi" src="https://img.shields.io/badge/Ko--fi-Support%20me-72A4F2?style=for-the-badge&logo=kofi&logoColor=white"></a>
+  <a href="https://coindrop.to/ineednotitle"><img alt="Donate via CoinDrop" src="https://img.shields.io/badge/CoinDrop-Donate-3D5A98?style=for-the-badge&logo=bitcoin&logoColor=white"></a>
+</p>
+
+Donations are optional. Bug reports, testing and focused pull requests help just
+as much.
 
 ## Install
 
@@ -823,24 +837,6 @@ are published by semantic-release from `main`. Run the verification scripts in
 Bug reports and focused pull requests are welcome. Please read
 [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or PR. Report security
 problems privately using [SECURITY.md](SECURITY.md), not in a public issue.
-
-## Support
-
-If these patches save you time or make an app more usable, you can support
-ongoing development:
-
-<p align="center">
-  <a href="#scan-to-donate"><img alt="Donate via UPI (scan QR)" src="https://img.shields.io/badge/UPI-Scan%20QR-FF6B00?style=for-the-badge&logo=googlepay&logoColor=white"></a>
-  <a href="https://paypal.me/ineednotitle"><img alt="Donate via PayPal" src="https://img.shields.io/badge/PayPal-Donate-00457C?style=for-the-badge&logo=paypal&logoColor=white"></a>
-  <a href="https://liberapay.com/ineednotitle"><img alt="Donate via Liberapay" src="https://img.shields.io/badge/Liberapay-Donate-F6C915?style=for-the-badge&logo=liberapay&logoColor=black"></a>
-  <a href="https://ko-fi.com/A1A62AJ2Q8"><img alt="Support me on Ko-fi" src="https://img.shields.io/badge/Ko--fi-Support%20me-72A4F2?style=for-the-badge&logo=kofi&logoColor=white"></a>
-  <a href="https://coindrop.to/ineednotitle"><img alt="Donate via CoinDrop" src="https://img.shields.io/badge/CoinDrop-Donate-3D5A98?style=for-the-badge&logo=bitcoin&logoColor=white"></a>
-  <a href="https://buymeacoffee.com/ADD_BMC_HANDLE"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black"></a>
-</p>
-
-
-Donations are optional. Bug reports, testing and focused pull requests help just
-as much.
 
 ## Acknowledgements
 
