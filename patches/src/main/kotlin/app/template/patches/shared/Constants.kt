@@ -2121,6 +2121,22 @@ val HINDUSTAN_TIMES_COMPATIBILITY = Compatibility(
         )
     )
 
+val INSTAGRAM_COMPATIBILITY = Compatibility(
+        name = "Instagram",
+        packageName = "com.instagram.android",
+        apkFileType = ApkFileType.APKM,
+        appIconColor = 0xE1306C,
+        targets = listOf(
+            AppTarget(
+                version = "439.0.0.37.89",
+                versionCodes = mapOf(
+                    SupportedAbi.ARM64_V8A to 384510827,
+                    SupportedAbi.ARMEABI_V7A to 384510838,
+                ),
+            ),
+        ),
+    )
+
 val MEESHO_COMPATIBILITY = Compatibility(
         name = "Meesho",
         packageName = "com.meesho.supply",
