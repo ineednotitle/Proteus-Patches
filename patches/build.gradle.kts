@@ -94,8 +94,16 @@ tasks {
         mainClass.set("app.template.patches.brave.BravePrivacyTest")
     }
 
+    val testInstagram by registering(JavaExec::class) {
+        description = "Test Instagram patch DEX helpers and clone rewriting"
+        group = "verification"
+        dependsOn(testClasses)
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("app.template.patches.instagram.InstagramPatchTest")
+    }
+
     check {
-        dependsOn(testPermissionRemoval, testBravePrivacy)
+        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram)
     }
 
     // Used by gradle-semantic-release-plugin.
