@@ -226,6 +226,47 @@
               "isExperimental": false,
               "minSdk": null,
               "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
             }
           ]
         },
@@ -1362,9 +1403,11 @@
     },
     {
       "name": "Bypass native integrity checks",
-      "description": "libunnamed_raw.so JNI-throws 'app integrity check failed' on re-signed builds, killing camera session start (preview) - observed via diagnostic crash log. This patch calls the session-opening wrapper inside a real JVM try/catch (extension) and substitutes a well-formed session result on failure. Required together with 'Allow re-signed/sideloaded installs'.",
+      "description": "Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) so camera preview, ISP processing, and RAW capture run normally on re-signed builds, while keeping the JVM session fallback active. Required together with 'Allow re-signed/sideloaded installs'.",
       "default": true,
-      "dependencies": [],
+      "dependencies": [
+        "RawResourcePatch"
+      ],
       "compatiblePackages": [
         {
           "packageName": "app.unnamed.rawrecording",
@@ -1911,6 +1954,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -2519,6 +2603,112 @@
       "options": []
     },
     {
+      "name": "Disable screenshot detection",
+      "description": "Prevents the app from detecting screenshots and displaying the share popup on Android 14+.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.amazon.mShop.android.shopping",
+          "name": "Amazon Shopping",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.18.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243240206,
+                "ARMEABI_V7A": 1243240206,
+                "X86_64": 1243240206,
+                "X86": 1243240206
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "in.amazon.mShop.android.shopping",
+          "name": "Amazon India",
+          "description": null,
+          "apkFileType": "XAPK",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.18.0.300",
+              "versionCodes": {
+                "ARM64_V8A": 1243240206,
+                "ARMEABI_V7A": 1243240206,
+                "X86_64": 1243240206,
+                "X86": 1243240206
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.300",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Disable search suggestions tracking",
       "description": "Prevents search keypress and focus events from being sent with suggestion requests.",
       "default": true,
@@ -2540,6 +2730,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -2605,6 +2836,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -2970,6 +3242,47 @@
               "isExperimental": false,
               "minSdk": null,
               "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
             }
           ]
         },
@@ -3300,6 +3613,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -3765,14 +4119,14 @@
     },
     {
       "name": "Meesho: Block analytics & tracking SDKs",
-      "description": "Blocks Meesho's analytics & tracking SDKs (Firebase Analytics, AppsFlyer,\nAdjust, Facebook AppEvents, WebEngage, CleverTap and similar) using the\nsame universal heuristic as 'Block analytics & tracking SDKs'.\n\nApplies to com.meesho.shopping only. Heuristic; obfuscated or\nreflection-based reporting is not covered. Unverified on device.",
+      "description": "Blocks Meesho's analytics & tracking SDKs (Firebase Analytics, AppsFlyer,\nAdjust, Facebook AppEvents, WebEngage, CleverTap and similar) using the\nsame universal heuristic as 'Block analytics & tracking SDKs'.\n\nApplies to com.meesho.supply only. Heuristic; obfuscated or\nreflection-based reporting is not covered. Unverified on device.",
       "default": false,
       "dependencies": [
         "BytecodePatch"
       ],
       "compatiblePackages": [
         {
-          "packageName": "com.meesho.shopping",
+          "packageName": "com.meesho.supply",
           "name": "Meesho",
           "description": null,
           "apkFileType": "XAPK",
@@ -3836,14 +4190,14 @@
     },
     {
       "name": "Meesho: Disable video autoplay (ExoPlayer)",
-      "description": "Stops video autoplay in the Meesho feed and product videos (ExoPlayer/Media3)\nusing the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.\n\nApplies to com.meesho.shopping only. Heuristic; see the universal entry\nfor limitations. Unverified on device.",
+      "description": "Stops video autoplay in the Meesho feed and product videos (ExoPlayer/Media3)\nusing the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.\n\nApplies to com.meesho.supply only. Heuristic; see the universal entry\nfor limitations. Unverified on device.",
       "default": false,
       "dependencies": [
         "BytecodePatch"
       ],
       "compatiblePackages": [
         {
-          "packageName": "com.meesho.shopping",
+          "packageName": "com.meesho.supply",
           "name": "Meesho",
           "description": null,
           "apkFileType": "XAPK",
@@ -3907,14 +4261,14 @@
     },
     {
       "name": "Meesho: Prefer external browser over Custom Tabs",
-      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.meesho.shopping only. Covers Custom Tabs /\nCustomTabsIntent call sites only. Unverified on device.",
+      "description": "Opens links in the default external browser instead of an in-app Custom\nTab, using the same rewrite as the universal 'Prefer external browser\nover Custom Tabs' patch.\n\nApplies to com.meesho.supply only. Covers Custom Tabs /\nCustomTabsIntent call sites only. Unverified on device.",
       "default": false,
       "dependencies": [
         "BytecodePatch"
       ],
       "compatiblePackages": [
         {
-          "packageName": "com.meesho.shopping",
+          "packageName": "com.meesho.supply",
           "name": "Meesho",
           "description": null,
           "apkFileType": "XAPK",
@@ -4214,6 +4568,47 @@
               "isExperimental": false,
               "minSdk": null,
               "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
             }
           ]
         },
@@ -4402,6 +4797,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -4864,6 +5300,47 @@
                 "X86_64": 1243240206,
                 "X86": 1243240206
               },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.19.0.100",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        },
+        {
+          "packageName": "com.amazon.mShop.android.business.shopping",
+          "name": "Amazon Business",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#FF9900",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "32.19.0.451",
+              "versionCodes": {
+                "ARM64_V8A": 1243250306,
+                "ARMEABI_V7A": 1243250306,
+                "X86_64": 1243250306,
+                "X86": 1243250306
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "32.20.0.451",
+              "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,
               "description": null
@@ -6246,9 +6723,11 @@
     },
     {
       "name": "Unlock Pro features",
-      "description": "Returns every registered feature from the entitlement accessor (Qu.k) so all Pro gates resolve unlocked. LOCAL client-side effect only. WARNING (kept off by default): on at least one device (realme/Android 16) enabling the single registered Pro feature crashes capture - the Pro pipeline path is gated by this flag and we cannot verify its safety side. Enable only if you specifically want the Pro toolset; the app works fully (RAW capture incl.) with just 'Allow re-signed installs'.",
+      "description": "Unlocks all Mereframe Pro features locally across both the Kotlin entitlement resolver (Qu.k/m) and the native license/session verifier (Bf1c089 + libunnamed_raw.so), eliminating paywall popups and capture/editor SecurityException crashes. Pair with 'Allow re-signed/sideloaded installs' and 'Bypass native integrity checks'.",
       "default": false,
-      "dependencies": [],
+      "dependencies": [
+        "RawResourcePatch"
+      ],
       "compatiblePackages": [
         {
           "packageName": "app.unnamed.rawrecording",

@@ -10,10 +10,31 @@ current status page and the triage runbook for field crashes.
 | Patch | Default | Role |
 |---|---|---|
 | Allow re-signed/sideloaded installs | **on** | Neutralizes the startup install-legality verdict → app starts at all |
-| Bypass native integrity checks | **on** | NEW (v2.2.9 re-cut): routes the camera session JNI call through a real JVM try/catch in the extension and substitutes {0L,1L} on failure |
+| Bypass native integrity checks | **on** | Patches all 5 ARM64 integrity gates in `lib/arm64-v8a/libunnamed_raw.so` with BTI/PAC-safe `bti jc; mov w0, #1; ret` stubs, plus routes `B1e6ad...->d(ZZZZFZ)[J` through `MereframeIntegrityHook` JVM try/catch fallback |
 | Diagnostic crash log | off | Writes the full stack to `Downloads/mereframe-crash-*.txt`, then chains to the normal crash path |
-| Unlock Pro features | off | Makes the entitlement accessor (`Qu.k`) return the full registered feature set, so every Pro gate (`Qu.e/o/p`) resolves unlocked. **WARNING:** on realme/Android 16 enabling it crashed capture on the one device tested — keep off unless deliberately testing |
+| Unlock Pro features | off | Unlocks `Qu.k/m` (full `Llr.p` set), neutralizes `Bf1c089` Paywall/session/receipt gates (`e`, `g`, `b`, `c`, `i`, `h`, `d`), and patches native `0x242048`/`0x244680` in `libunnamed_raw.so` so Pro capture & `PhotoEditActivity` run without paywall popups or `SecurityException` crashes |
 | Fix Firebase after re-signing (universal) | off | Needed if Firebase services break after re-signing |
+
+## Native integrity & Pro-unlock root causes (0.8.4 / vc 118 ELF + DEX analysis)
+
+Two distinct layers caused failures even when `B1e6ad...d()` or `Qu.k()` were patched alone:
+
+1. **Native integrity across `libunnamed_raw.so` (117 call sites across all `B*` bridge classes):**
+   Every bridge (`B1e6ad`, `B0210f8cad`, `B116a57da`, `B15f35e58`, `B6f0920d4`, `Bd3aa6ded`,
+   `Bf1c089`, `B33638d4c`, `JNI_OnLoad`) calls five C++ checkers (`0x23f3d8` package/signature,
+   `0x2a5ecc` `assets/unnamed.protection`, `0x2bf304` `/proc/self/maps`, `0x2e5fb0` loaded `.so`
+   maps, and `0x2e1b54` `dl_iterate_phdr`/`prctl`). Wrapping only `B1e6ad.d()` (or returning
+   dummy arrays that violate `LC2.a()` length assertions) left the remaining native callers
+   throwing `SecurityException("app integrity check failed")` once camera frames flowed.
+   `BypassNativeIntegrityPatch` now replaces all five ARM64 gates directly using unique
+   96-byte prologues and `bti jc; mov w0, #1; ret` stubs (respecting ELF `.note.gnu.property`
+   `BTI | PAC = 0x3`), while retaining `MereframeIntegrityHook` on `B1e6ad.d()` as a JVM fallback.
+2. **Pro paywall popup & capture/editor crash (`Bf1c089` + `0x242048`/`0x244680`):**
+   Making `Qu.k` return `Llr.p` exposed callers (`PhotoEditActivity.k()`, `LIA.<init>()`,
+   `LUD.j`, `LJm`, `LUl.X`, `LHb.h`, `Lkg.x`, `Ll6`) to `Bf1c089.g()` (`0x2766f0 -> 0x244680`),
+   `Bf1c089.d()` (`0x25dae8` -> `Leq`), and `Bd3aa6ded.n5035ad` (`0x242048`), which still threw
+   `SecurityException` without a cached Play receipt. `UnlockProPatch` now unlocks both the
+   `Qu` / `Bf1c089` DEX surface and `0x242048`/`0x244680` in `libunnamed_raw.so`.
 
 ## 2026-11-10 — issue #5: Pro paywall still appears (FIXED, patch-application verified)
 

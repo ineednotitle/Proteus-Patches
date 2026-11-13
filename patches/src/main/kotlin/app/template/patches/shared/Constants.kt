@@ -117,7 +117,21 @@ val AMAZON_SHOPPING_COMPATIBILITY = Compatibility(
         packageName = "com.amazon.mShop.android.shopping",
         appIconColor = 0xFF9900,
         apkFileType = ApkFileType.XAPK,
-        targets = listOf(AppTarget(version = "32.18.0.100", versionCode = 1243240206))
+        targets = listOf(
+            AppTarget(version = "32.18.0.100", versionCode = 1243240206),
+            AppTarget(version = "32.19.0.100", versionCode = 1243250306),
+        )
+    )
+
+val AMAZON_BUSINESS_COMPATIBILITY = Compatibility(
+        name = "Amazon Business",
+        packageName = "com.amazon.mShop.android.business.shopping",
+        appIconColor = 0xFF9900,
+        apkFileType = ApkFileType.APKM,
+        targets = listOf(
+            AppTarget(version = "32.19.0.451", versionCode = 1243250306),
+            AppTarget(version = "32.20.0.451"),
+        )
     )
 
 val AMOLEDPIX_COMPATIBILITY = Compatibility(
@@ -2109,7 +2123,7 @@ val HINDUSTAN_TIMES_COMPATIBILITY = Compatibility(
 
 val MEESHO_COMPATIBILITY = Compatibility(
         name = "Meesho",
-        packageName = "com.meesho.shopping",
+        packageName = "com.meesho.supply",
         apkFileType = ApkFileType.XAPK,
         appIconColor = 0xF43397,
         targets = listOf(

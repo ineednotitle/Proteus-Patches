@@ -70,14 +70,15 @@ The catalog below is generated from `patches-list.json`. Expand an app to see it
 compatible versions, patches and options.
 
 <!-- PATCHES_START -->
-> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;187 patches total
+> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;199 patches total
 
 ### Supported apps
 
 | App | Compatible versions | Patches |
 | :--- | :--- | ---: |
-| [Amazon India](#app-in-amazon-mshop-android-shopping) | 32.18.0.300 · 32.19.0.300 | 9 |
-| [Amazon Shopping](#app-com-amazon-mshop-android-shopping) | 32.18.0.100 | 9 |
+| [Amazon Business](#app-com-amazon-mshop-android-business-shopping) | 32.19.0.451 · 32.20.0.451 | 10 |
+| [Amazon India](#app-in-amazon-mshop-android-shopping) | 32.18.0.300 · 32.19.0.300 | 10 |
+| [Amazon Shopping](#app-com-amazon-mshop-android-shopping) | 32.18.0.100 · 32.19.0.100 | 10 |
 | [Brave Browser](#app-com-brave-browser) | 1.98.63 | 14 |
 | [ChatGPT](#app-com-openai-chatgpt) | 1.2026.293 | 3 |
 | [Claude](#app-com-anthropic-claude) | 1.261023.20 | 1 |
@@ -91,7 +92,7 @@ compatible versions, patches and options.
 | [Inure App Manager](#app-app-simple-inure-play) | build107.2.1 | 1 |
 | [Inure App Manager (GitHub)](#app-app-simple-inure) | build107.2.4 | 1 |
 | [Malwarebytes Mobile Security](#app-org-malwarebytes-antimalware) | 5.27.0+564 | 1 |
-| [Meesho](#app-com-meesho-shopping) | 29.9 · 29.8 · 29.7 · +2 more | 3 |
+| [Meesho](#app-com-meesho-supply) | 29.9 · 29.8 · 29.7 · +2 more | 3 |
 | [Mereframe](#app-app-unnamed-rawrecording) | 0.8.4 | 4 |
 | [Mint](#app-com-htmedia-mint) | 5.7.5 · 5.8.4 | 3 |
 | [MUBI](#app-com-mubi) | 100.0 · 99.1 | 16 |
@@ -110,9 +111,34 @@ compatible versions, patches and options.
 | [Yatri](#app-com-yatrirailways-yatri) | 5.0.6 | 1 |
 | [Universal patches](#universal-patches) | Any app | 23 |
 
+<a id="app-com-amazon-mshop-android-business-shopping"></a>
+<details>
+<summary><strong>Amazon Business</strong> · 10 patches</summary>
+<br>
+
+**Compatible versions**
+
+| 32.19.0.451 | 32.20.0.451 |
+| :---: | :---: |
+
+| Patch | Description | Options |
+| :--- | :--- | :--- |
+| [Amazon: Stop feed video autoplay](#amazon-stop-feed-video-autoplay) | Stops Amazon's home-feed native video units (live promotional videos,<br>review carousels, sponsored reels) from starting on their own, using<br>the same setPlayWhenReady(true) → false heuristic as the universal<br>'Disable video autoplay (ExoPlayer/Media3)' patch.<br><br>Covers native ExoPlayer/Media3 players only — NOT the in-app WebView<br>pages (use the default-on 'Disable video autoplay' patch for those),<br>and NOT WebView CSS-injected ad blocks (use 'Remove ads'). Heuristic:<br>reflection or obfuscated player setup is not covered. Can stop playback<br>entirely in apps whose only play path is a flipped literal call — turn<br>it off if videos never start. Unverified on device. |  |
+| [Dark mode](#dark-mode) | Force dark mode for Amazon Shopping. | • Dark mode |
+| [Disable screenshot detection](#disable-screenshot-detection) | Prevents the app from detecting screenshots and displaying the share popup on Android 14+. |  |
+| [Disable search suggestions tracking](#disable-search-suggestions-tracking) | Prevents search keypress and focus events from being sent with suggestion requests. |  |
+| [Disable video autoplay](#disable-video-autoplay) | Prevents videos from autoplaying in Amazon's in-app WebView pages. |  |
+| [Fix Amazon manifest conflicts](#fix-amazon-manifest-conflicts) | Updates shared Amazon permissions so other Amazon apps can coexist. |  |
+| [Hide Rufus tab](#hide-rufus-tab) | Removes the Rufus AI assistant tab from Amazon's bottom navigation bar. |  |
+| [Open links in browser](#open-links-in-browser) | Opens non-Amazon URLs in the default browser instead of the in-app WebView. |  |
+| [Price history charts](#price-history-charts) | Injects Keepa and CamelCamelCamel price history charts on Amazon product pages. | • Chart period<br>• Show period toggle<br>• Toggle periods<br>• Keepa price lines<br>• CamelCamelCamel chart<br>• Hide zero-price gaps<br>• Chart size<br>• Start collapsed |
+| [Remove ads](#remove-ads) | Hides sponsored and ad content in Amazon Shopping via CSS injection. |  |
+
+</details>
+
 <a id="app-in-amazon-mshop-android-shopping"></a>
 <details>
-<summary><strong>Amazon India</strong> · 9 patches</summary>
+<summary><strong>Amazon India</strong> · 10 patches</summary>
 <br>
 
 **Compatible versions**
@@ -124,6 +150,7 @@ compatible versions, patches and options.
 | :--- | :--- | :--- |
 | [Amazon: Stop feed video autoplay](#amazon-stop-feed-video-autoplay) | Stops Amazon's home-feed native video units (live promotional videos,<br>review carousels, sponsored reels) from starting on their own, using<br>the same setPlayWhenReady(true) → false heuristic as the universal<br>'Disable video autoplay (ExoPlayer/Media3)' patch.<br><br>Covers native ExoPlayer/Media3 players only — NOT the in-app WebView<br>pages (use the default-on 'Disable video autoplay' patch for those),<br>and NOT WebView CSS-injected ad blocks (use 'Remove ads'). Heuristic:<br>reflection or obfuscated player setup is not covered. Can stop playback<br>entirely in apps whose only play path is a flipped literal call — turn<br>it off if videos never start. Unverified on device. |  |
 | [Dark mode](#dark-mode) | Force dark mode for Amazon Shopping. | • Dark mode |
+| [Disable screenshot detection](#disable-screenshot-detection) | Prevents the app from detecting screenshots and displaying the share popup on Android 14+. |  |
 | [Disable search suggestions tracking](#disable-search-suggestions-tracking) | Prevents search keypress and focus events from being sent with suggestion requests. |  |
 | [Disable video autoplay](#disable-video-autoplay) | Prevents videos from autoplaying in Amazon's in-app WebView pages. |  |
 | [Fix Amazon manifest conflicts](#fix-amazon-manifest-conflicts) | Updates shared Amazon permissions so other Amazon apps can coexist. |  |
@@ -136,18 +163,19 @@ compatible versions, patches and options.
 
 <a id="app-com-amazon-mshop-android-shopping"></a>
 <details>
-<summary><strong>Amazon Shopping</strong> · 9 patches</summary>
+<summary><strong>Amazon Shopping</strong> · 10 patches</summary>
 <br>
 
 **Compatible versions**
 
-| 32.18.0.100 |
-| :---: |
+| 32.18.0.100 | 32.19.0.100 |
+| :---: | :---: |
 
 | Patch | Description | Options |
 | :--- | :--- | :--- |
 | [Amazon: Stop feed video autoplay](#amazon-stop-feed-video-autoplay) | Stops Amazon's home-feed native video units (live promotional videos,<br>review carousels, sponsored reels) from starting on their own, using<br>the same setPlayWhenReady(true) → false heuristic as the universal<br>'Disable video autoplay (ExoPlayer/Media3)' patch.<br><br>Covers native ExoPlayer/Media3 players only — NOT the in-app WebView<br>pages (use the default-on 'Disable video autoplay' patch for those),<br>and NOT WebView CSS-injected ad blocks (use 'Remove ads'). Heuristic:<br>reflection or obfuscated player setup is not covered. Can stop playback<br>entirely in apps whose only play path is a flipped literal call — turn<br>it off if videos never start. Unverified on device. |  |
 | [Dark mode](#dark-mode) | Force dark mode for Amazon Shopping. | • Dark mode |
+| [Disable screenshot detection](#disable-screenshot-detection) | Prevents the app from detecting screenshots and displaying the share popup on Android 14+. |  |
 | [Disable search suggestions tracking](#disable-search-suggestions-tracking) | Prevents search keypress and focus events from being sent with suggestion requests. |  |
 | [Disable video autoplay](#disable-video-autoplay) | Prevents videos from autoplaying in Amazon's in-app WebView pages. |  |
 | [Fix Amazon manifest conflicts](#fix-amazon-manifest-conflicts) | Updates shared Amazon permissions so other Amazon apps can coexist. |  |
@@ -394,7 +422,7 @@ compatible versions, patches and options.
 
 </details>
 
-<a id="app-com-meesho-shopping"></a>
+<a id="app-com-meesho-supply"></a>
 <details>
 <summary><strong>Meesho</strong> · 3 patches</summary>
 <br>
@@ -406,9 +434,9 @@ compatible versions, patches and options.
 
 | Patch | Description | Options |
 | :--- | :--- | :--- |
-| [Meesho: Block analytics & tracking SDKs](#meesho-block-analytics-tracking-sdks) | Blocks Meesho's analytics & tracking SDKs (Firebase Analytics, AppsFlyer,<br>Adjust, Facebook AppEvents, WebEngage, CleverTap and similar) using the<br>same universal heuristic as 'Block analytics & tracking SDKs'.<br><br>Applies to com.meesho.shopping only. Heuristic; obfuscated or<br>reflection-based reporting is not covered. Unverified on device. |  |
-| [Meesho: Disable video autoplay (ExoPlayer)](#meesho-disable-video-autoplay-exoplayer) | Stops video autoplay in the Meesho feed and product videos (ExoPlayer/Media3)<br>using the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.<br><br>Applies to com.meesho.shopping only. Heuristic; see the universal entry<br>for limitations. Unverified on device. |  |
-| [Meesho: Prefer external browser over Custom Tabs](#meesho-prefer-external-browser-over-custom-tabs) | Opens links in the default external browser instead of an in-app Custom<br>Tab, using the same rewrite as the universal 'Prefer external browser<br>over Custom Tabs' patch.<br><br>Applies to com.meesho.shopping only. Covers Custom Tabs /<br>CustomTabsIntent call sites only. Unverified on device. |  |
+| [Meesho: Block analytics & tracking SDKs](#meesho-block-analytics-tracking-sdks) | Blocks Meesho's analytics & tracking SDKs (Firebase Analytics, AppsFlyer,<br>Adjust, Facebook AppEvents, WebEngage, CleverTap and similar) using the<br>same universal heuristic as 'Block analytics & tracking SDKs'.<br><br>Applies to com.meesho.supply only. Heuristic; obfuscated or<br>reflection-based reporting is not covered. Unverified on device. |  |
+| [Meesho: Disable video autoplay (ExoPlayer)](#meesho-disable-video-autoplay-exoplayer) | Stops video autoplay in the Meesho feed and product videos (ExoPlayer/Media3)<br>using the same heuristic as 'Disable video autoplay (ExoPlayer/Media3)'.<br><br>Applies to com.meesho.supply only. Heuristic; see the universal entry<br>for limitations. Unverified on device. |  |
+| [Meesho: Prefer external browser over Custom Tabs](#meesho-prefer-external-browser-over-custom-tabs) | Opens links in the default external browser instead of an in-app Custom<br>Tab, using the same rewrite as the universal 'Prefer external browser<br>over Custom Tabs' patch.<br><br>Applies to com.meesho.supply only. Covers Custom Tabs /<br>CustomTabsIntent call sites only. Unverified on device. |  |
 
 </details>
 
@@ -425,9 +453,9 @@ compatible versions, patches and options.
 | Patch | Description | Options |
 | :--- | :--- | :--- |
 | [Allow re-signed/sideloaded installs](#allow-re-signed-sideloaded-installs) | Neutralizes Mereframe's install-integrity checks so patched (re-signed) builds start normally instead of showing the installation-refused screen. Required for any other patch here to be usable. |  |
-| [Bypass native integrity checks](#bypass-native-integrity-checks) | libunnamed_raw.so JNI-throws 'app integrity check failed' on re-signed builds, killing camera session start (preview) - observed via diagnostic crash log. This patch calls the session-opening wrapper inside a real JVM try/catch (extension) and substitutes a well-formed session result on failure. Required together with 'Allow re-signed/sideloaded installs'. |  |
+| [Bypass native integrity checks](#bypass-native-integrity-checks) | Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) so camera preview, ISP processing, and RAW capture run normally on re-signed builds, while keeping the JVM session fallback active. Required together with 'Allow re-signed/sideloaded installs'. |  |
 | [Diagnostic crash log](#diagnostic-crash-log) | DIAGNOSTIC ONLY - writes the full stack trace to Downloads/mereframe-crash-*.txt when the app crashes, for remote diagnosis. Off by default; enable when asked to produce a crash log. Chain-forwards to the original crash handler. |  |
-| [Unlock Pro features](#unlock-pro-features) | Returns every registered feature from the entitlement accessor (Qu.k) so all Pro gates resolve unlocked. LOCAL client-side effect only. WARNING (kept off by default): on at least one device (realme/Android 16) enabling the single registered Pro feature crashes capture - the Pro pipeline path is gated by this flag and we cannot verify its safety side. Enable only if you specifically want the Pro toolset; the app works fully (RAW capture incl.) with just 'Allow re-signed installs'. |  |
+| [Unlock Pro features](#unlock-pro-features) | Unlocks all Mereframe Pro features locally across both the Kotlin entitlement resolver (Qu.k/m) and the native license/session verifier (Bf1c089 + libunnamed_raw.so), eliminating paywall popups and capture/editor SecurityException crashes. Pair with 'Allow re-signed/sideloaded installs' and 'Bypass native integrity checks'. |  |
 
 </details>
 
