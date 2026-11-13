@@ -1,6 +1,6 @@
 {
-  "created_at": "2026-11-12T16:29:17",
-  "description": "## [2.3.0](https://github.com/[secure]/Proteus-Patches/compare/v2.2.10...v2.3.0) (2026-11-12)\n\n### ✨ New Features\n\n* **release:** expand Proton Pass and Gboard patches for v2.2.10 ([2de3200](https://github.com/[secure]/Proteus-Patches/commit/2de3200757447185ba8eaa9dd127d85e4d807b2c))",
+  "created_at": "2026-11-13T08:09:58",
+  "description": "## [2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0) (pre-release re-cut)\n\n- **Meesho (#32)**: Updated target package to `com.meesho.supply` (`29.5`–`29.9`) and cleaned up `docs/MEESHO.md`.\n- **Amazon (#21 / PR #31)**: Added Amazon Business (`com.amazon.mShop.android.business.shopping`) + Shopping `32.19.0.100`, `Disable screenshot detection`, expanded WebView AdBlock selectors (`amznkiller`), and WebView JS video autoplay blocking.\n- **Mereframe (#5 / PR #33)**: Added BTI/PAC-safe ARM64 `.so` integrity + Pro gates (`libunnamed_raw.so`) alongside `LQu.k/m` and `Bf1c089.*` DEX hooks.",
   "download_url": "https://github.com/ineednotitle/Proteus-Patches/releases/download/v2.3.0/patches-2.3.0.mpp",
   "signature_download_url": "",
   "version": "2.3.0"
