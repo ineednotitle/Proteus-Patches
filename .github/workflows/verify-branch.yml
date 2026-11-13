@@ -45,9 +45,10 @@ jobs:
         run: |
           ./gradlew :patches:check --stacktrace > check.log 2>&1 && tail -20 check.log && exit 0
           echo "=== GREP: check failure ==="
-          grep -n -m 25 -E "What went wrong|FAILURE:|Caused by|Exception|Error|(^|[[:space:]])e:" check.log || true
-          tail -n 60 check.log
-          echo "::error::$(tail -n 35 check.log | tr '\n' ' ' | cut -c1-1200)"
+          ERR_SUMMARY=$(grep -n -E "^> Task |^FAILURE:|What went wrong:|Caused by:|e: |Exception|Execution failed" check.log | tail -n 30 | tr '\n' ' ' | cut -c1-1200)
+          echo "$ERR_SUMMARY"
+          echo "::error::$ERR_SUMMARY"
+          cat check.log | tail -n 120
           exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
