@@ -20,6 +20,7 @@ public final class InstagramLimitFeedToFollowedProfiles {
      */
     public static Map<String, String> setFollowingHeader(Map<String, String> requestHeaderMap) {
         if (requestHeaderMap == null) return null;
+        if (!InstagramRuntimeFlags.isChronologicalFeedEnabled()) return requestHeaderMap;
         String paginationHeaderName = "pagination_source";
 
         // Patch the header only if it's trying to fetch the default recommended feed.
