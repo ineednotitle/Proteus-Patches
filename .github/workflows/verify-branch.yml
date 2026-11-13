@@ -43,12 +43,9 @@ jobs:
 
       - name: Run patches verification tasks
         run: |
-          ./gradlew :patches:check --stacktrace > check.log 2>&1 && tail -20 check.log && exit 0
-          echo "=== GREP: check failure ==="
-          ERR_SUMMARY=$(grep -n -E "^> Task |^FAILURE:|What went wrong:|Caused by:|e: |Exception|Execution failed" check.log | tail -n 30 | tr '\n' ' ' | cut -c1-1200)
-          echo "$ERR_SUMMARY"
-          echo "::error::$ERR_SUMMARY"
-          cat check.log | tail -n 120
+          ./gradlew :patches:check --console=plain > check.log 2>&1 && tail -20 check.log && exit 0
+          cat check.log
+          echo "::error::$(grep -v '^[[:space:]]*$' check.log | tail -n 25 | tr '\n' '|' | cut -c1-1200)"
           exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
