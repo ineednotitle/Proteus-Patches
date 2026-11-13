@@ -70,7 +70,7 @@ The catalog below is generated from `patches-list.json`. Expand an app to see it
 compatible versions, patches and options.
 
 <!-- PATCHES_START -->
-> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;199 patches total
+> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;217 patches total
 
 ### Supported apps
 
@@ -89,6 +89,7 @@ compatible versions, patches and options.
 | [Gboard](#app-com-google-android-inputmethod-latin) | 18.5.4.993608717-release-arm64-v8a · 18.5.4.993608717-release-armeabi-v7a | 2 |
 | [Google Photos](#app-com-google-android-apps-photos) | 7.97.0.997578476 | 7 |
 | [Hindustan Times](#app-com-ht-news) | 4.9.16 | 3 |
+| [Instagram](#app-com-instagram-android) | 439.0.0.37.89 | 18 |
 | [Inure App Manager](#app-app-simple-inure-play) | build107.2.1 | 1 |
 | [Inure App Manager (GitHub)](#app-app-simple-inure) | build107.2.4 | 1 |
 | [Malwarebytes Mobile Security](#app-org-malwarebytes-antimalware) | 5.27.0+564 | 1 |
@@ -371,6 +372,39 @@ compatible versions, patches and options.
 | [Hindustan Times: Block analytics & tracking SDKs](#hindustan-times-block-analytics-tracking-sdks) | Blocks Hindustan Times' analytics & tracking SDKs (Firebase Analytics,<br>AppsFlyer, Adjust, WebEngage, CleverTap and similar) using the same universal<br>heuristic as 'Block analytics & tracking SDKs'.<br><br>Applies to com.ht.news only. Heuristic; obfuscated or reflection-based<br>reporting is not covered. Unverified on device. |  |
 | [Hindustan Times: Disable video autoplay (ExoPlayer)](#hindustan-times-disable-video-autoplay-exoplayer) | Stops video autoplay in the Hindustan Times feed/article bodies<br>(ExoPlayer/Media3) using the same heuristic as 'Disable video autoplay<br>(ExoPlayer/Media3)'.<br><br>Applies to com.ht.news only. Heuristic; see the universal entry for<br>limitations. Unverified on device. |  |
 | [Hindustan Times: Prefer external browser over Custom Tabs](#hindustan-times-prefer-external-browser-over-custom-tabs) | Opens links in the default external browser instead of an in-app Custom<br>Tab, using the same rewrite as the universal 'Prefer external browser<br>over Custom Tabs' patch.<br><br>Applies to com.ht.news only. Some article WebViews are not affected —<br>this covers Custom Tabs / CustomTabsIntent call sites only.<br>Unverified on device. |  |
+
+</details>
+
+<a id="app-com-instagram-android"></a>
+<details>
+<summary><strong>Instagram</strong> · 18 patches</summary>
+<br>
+
+**Compatible versions**
+
+| 439.0.0.37.89 |
+| :---: |
+
+| Patch | Description | Options |
+| :--- | :--- | :--- |
+| [Bypass signature check](#bypass-signature-check) | Bypasses Instagram's internal provider signature verification after patching. |  |
+| [Clone](#clone) | Changes the package name and the app name so you can install the patched app alongside the official Instagram app. Caution: Do not combine with the universal "Change package name" patch. | • Package name<br>• App name |
+| [Disable Reels scrolling](#disable-reels-scrolling) | Disables the endless scrolling behavior in Instagram Reels, preventing swiping to the next Reel. Note: On a clean install, the 'Tip' animation may appear but will stop on its own after a few seconds. |  |
+| [Disable story auto flipping](#disable-story-auto-flipping) | Disable stories automatically flipping/skipping after some seconds. |  |
+| [Disable video autoplay](#disable-video-autoplay) | Disable video autoplay from feed. |  |
+| [Hide Instants](#hide-instants) | Hides Instants from DMs page. |  |
+| [Hide Reels save button](#hide-reels-save-button) | Hides the save button from Reels. |  |
+| [Hide Threads profile button](#hide-threads-profile-button) | Hides the Threads button from the profile page action bar (top right of the profile page). |  |
+| [Hide ads](#hide-ads) | Removes ads from the Instagram feed and stories. |  |
+| [Hide all stories](#hide-all-stories) | Hides all stories from the tray in the feed page. You may need to clean app data after the initial use of this patch to see its effects. |  |
+| [Hide explore feed](#hide-explore-feed) | Hides posts and reels from the explore/search page. |  |
+| [Hide feed content](#hide-feed-content) | Hide the feed content, leaving only stories in the home page. |  |
+| [Hide navigation buttons](#hide-navigation-buttons) | Hides navigation bar buttons, such as the Reels and Create button. Choose what button to hide using the patch options. | • Hide Home<br>• Hide Reels<br>• Hide Direct<br>• Hide Search<br>• Hide Profile<br>• Hide Create |
+| [Hide notes tray](#hide-notes-tray) | Hides the notes tray from the direct tab. |  |
+| [Hide reshare button](#hide-reshare-button) | Hides the reshare button from both posts and reels. |  |
+| [Hide suggested content](#hide-suggested-content) | Choose the suggested content to hide using the patch options. | • Hide suggested reels<br>• Hide suggested stories<br>• Hide highlights in stories<br>• Hide suggested accounts |
+| [Limit feed to following profiles](#limit-feed-to-following-profiles) | Filters the home feed to display only chronological content from profiles you follow. |  |
+| [Remove build expired popup](#remove-build-expired-popup) | Removes the popup that appears after a while when the app version ages. |  |
 
 </details>
 
