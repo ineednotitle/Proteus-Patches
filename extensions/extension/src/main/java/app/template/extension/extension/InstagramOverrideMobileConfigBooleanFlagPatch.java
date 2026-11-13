@@ -42,6 +42,15 @@ public final class InstagramOverrideMobileConfigBooleanFlagPatch {
         if (SENTINEL.equals(configId)) {
             return null;
         }
+        // Only patch-enabled flags may be toggled at runtime. A patch that did
+        // not add a static override must not start enabling unrelated flags
+        // just because the override hook is linked.
+        Boolean runtimeOverride = OVERRIDES.containsKey(configId)
+                ? InstagramRuntimeFlags.overrideMobileConfig(configId)
+                : null;
+        if (runtimeOverride != null) {
+            return runtimeOverride;
+        }
         return OVERRIDES.get(configId);
     }
 }

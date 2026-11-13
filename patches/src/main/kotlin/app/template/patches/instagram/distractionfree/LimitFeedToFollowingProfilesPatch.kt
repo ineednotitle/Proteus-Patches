@@ -12,6 +12,7 @@ import app.morphe.patcher.patch.bytecodePatch
 import app.template.patches.shared.Constants.INSTAGRAM_COMPATIBILITY
 import app.template.patches.shared.getReference
 import app.template.patches.shared.indexOfFirstInstructionOrThrow
+import app.template.patches.instagram.shared.overrideInstagramMobileConfigBooleanFlag
 import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 
@@ -37,6 +38,13 @@ val instagramLimitFeedToFollowingProfilesPatch = bytecodePatch(
     description = "Filters the home feed to display only chronological content from profiles you follow.",
     default = true,
 ) {
+    dependsOn(
+        // p92_android_ranked_following_feed:is_enabled. Turning this off keeps
+        // the timeline in the classic following mode instead of the ranked
+        // following variant.
+        overrideInstagramMobileConfigBooleanFlag(override = "108494::0" to false),
+    )
+
     compatibleWith(INSTAGRAM_COMPATIBILITY)
     extendWith("extensions/extension.mpe")
 

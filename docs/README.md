@@ -18,6 +18,7 @@ Guides, verification notes and triage references for Proteus Patches.
 | [Amazon](AMAZON.md) | Amazon Shopping and Amazon India patch status, limitations and issue responses |
 | [Brave](BRAVE.md) | Brave patch status, `res=-113` fix and install troubleshooting |
 | [HT News apps](HT-NEWS-APPS.md) | Mint and Hindustan Times patch analysis |
+| [Instagram](INSTAGRAM.md) | Instagram settings, Ghost Mode, Reels controls and browser limits |
 | [Meesho](MEESHO.md) | Meesho patch status and analysis |
 | [Mereframe](MEREFRAME.md) | Mereframe patch status, verification and crash triage |
 | [Pinterest video](PINTEREST-VIDEO.md) | Experimental Pinterest video download behavior |

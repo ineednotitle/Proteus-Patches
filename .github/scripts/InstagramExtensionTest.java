@@ -120,7 +120,137 @@ public final class InstagramExtensionTest {
         long smallSpecifier = (0xabcL << 16);
         check(InstagramOverrideMobileConfigBooleanFlagPatch.getMobileConfigFlagId(smallSpecifier) == 0xabcL, "12-bit flag id");
 
+        // 6. Runtime flags: chronological feed toggle
+        updateRuntimeFlags(true, false, true, true, true, true, true, InstagramLikeAnimations.DEFAULT);
+        Map<String, String> followingWhenEnabled =
+                InstagramLimitFeedToFollowedProfiles.setFollowingHeader(defaultHeaders);
+        check("following".equals(followingWhenEnabled.get("pagination_source")),
+                "chronological runtime flag must enable the following header");
+
+        updateRuntimeFlags(false, false, true, true, true, true, true, InstagramLikeAnimations.DEFAULT);
+        Map<String, String> unchangedWhenDisabled =
+                InstagramLimitFeedToFollowedProfiles.setFollowingHeader(defaultHeaders);
+        check(unchangedWhenDisabled == defaultHeaders,
+                "disabled chronological feed must pass the original header map");
+
+        // 7. Runtime MobileConfig overrides only for patch-enabled ids
+        updateRuntimeFlags(true, true, true, true, true, true, true, InstagramLikeAnimations.DEFAULT);
+        InstagramOverrideMobileConfigBooleanFlagPatch.OVERRIDES.put("108494::0", Boolean.FALSE);
+        check(
+            Boolean.FALSE.equals(InstagramOverrideMobileConfigBooleanFlagPatch.overrideBooleanFlag(0L, "108494", "0")),
+            "ranked following feed must be disabled while chronological feed is on"
+        );
+        updateRuntimeFlags(false, true, true, true, true, true, true, InstagramLikeAnimations.DEFAULT);
+        check(
+            Boolean.TRUE.equals(InstagramOverrideMobileConfigBooleanFlagPatch.overrideBooleanFlag(0L, "108494", "0")),
+            "ranked following feed must be restored when chronological feed is off"
+        );
+
+        InstagramOverrideMobileConfigBooleanFlagPatch.OVERRIDES.put("109947::0", Boolean.TRUE);
+        check(
+            Boolean.TRUE.equals(InstagramOverrideMobileConfigBooleanFlagPatch.overrideBooleanFlag(0L, "109947", "0")),
+            "reels speed flag must be on by default"
+        );
+        updateRuntimeFlags(true, false, true, true, true, false, true, InstagramLikeAnimations.DEFAULT);
+        check(
+            Boolean.FALSE.equals(InstagramOverrideMobileConfigBooleanFlagPatch.overrideBooleanFlag(0L, "109947", "0")),
+            "reels speed flag must follow the runtime toggle"
+        );
+
+        // 8. Ghost mode state and URL blocking
+        InstagramOverrideMobileConfigBooleanFlagPatch.OVERRIDES.put("85450::68", Boolean.FALSE);
+        updateRuntimeFlags(true, false, true, true, true, true, true, InstagramLikeAnimations.DEFAULT);
+        check(
+            Boolean.TRUE.equals(
+                InstagramOverrideMobileConfigBooleanFlagPatch.overrideBooleanFlag(0L, "85450", "68")),
+            "typing indicators must be restored while ghost mode is off"
+        );
+        updateRuntimeFlags(true, true, true, true, true, true, true, InstagramLikeAnimations.DEFAULT);
+        check(
+            Boolean.FALSE.equals(
+                InstagramOverrideMobileConfigBooleanFlagPatch.overrideBooleanFlag(0L, "85450", "68")),
+            "typing indicators must be hidden while ghost mode is on"
+        );
+        check(InstagramRuntimeFlags.shouldHideDmSeen(), "ghost mode must hide DM seen receipts");
+        check(InstagramGhostMode.shouldHideStorySeen(), "ghost mode must hide story seen receipts");
+
+        InstagramGhostRequestFilter.setBlockStorySeen(false);
+        check(
+            !InstagramGhostRequestFilter.shouldBlockUrl("https://i.instagram.com/api/v1/media/seen/?reel=1"),
+            "ghost filter must be inactive by default"
+        );
+        InstagramGhostRequestFilter.setBlockStorySeen(true);
+        check(
+            InstagramGhostRequestFilter.shouldBlockUrl("https://i.instagram.com/api/v1/media/seen/?reel=1"),
+            "story seen URL must be blocked"
+        );
+        check(
+            !InstagramGhostRequestFilter.shouldBlockUrl("https://i.instagram.com/api/v1/feed/timeline/"),
+            "unrelated URLs must not be blocked"
+        );
+        InstagramGhostRequestFilter.setBlockStorySeen(false);
+
+        // 9. URL helpers for the in-app browser
+        check(
+            "https://www.instagram.com/alice/reels/".equals(
+                InstagramWebBrowserUrls.profileReels("alice")),
+            "profile reels URL"
+        );
+        check(
+            "https://www.instagram.com/alice/reels/".equals(
+                InstagramWebBrowserUrls.profileReels(" @alice ")),
+            "username normalization"
+        );
+        check(
+            InstagramWebBrowserUrls.profileReels("not a username") == null,
+            "invalid username must be rejected"
+        );
+        check(
+            InstagramWebBrowserUrls.ownLikedPosts().contains("/your_activity/likes/"),
+            "own liked posts URL"
+        );
+        check(
+            InstagramWebBrowserUrls.loggedOutExplore().contains("/explore/"),
+            "logged-out explore URL"
+        );
+
+        // 10. Like animation labels
+        check(
+            "Rings Like Adrian".equals(InstagramLikeAnimations.label("RINGS_LIKE_ADRIAN")),
+            "animation labels must be readable"
+        );
+        check(
+            "Default heart".equals(InstagramLikeAnimations.label(InstagramLikeAnimations.DEFAULT)),
+            "default animation label"
+        );
+        check(
+            InstagramLikeAnimations.values().length > 3,
+            "animation values must be exposed"
+        );
+
         System.out.println("Instagram extension helper tests passed");
+    }
+
+    private static void updateRuntimeFlags(
+            boolean chronologicalFeed,
+            boolean ghostMode,
+            boolean hideTyping,
+            boolean hideDmSeen,
+            boolean hideStorySeen,
+            boolean reelsSpeed,
+            boolean reelsSeek,
+            String likeAnimation
+    ) {
+        InstagramRuntimeFlags.update(
+                chronologicalFeed,
+                ghostMode,
+                hideTyping,
+                hideDmSeen,
+                hideStorySeen,
+                reelsSpeed,
+                reelsSeek,
+                likeAnimation
+        );
     }
 
     private static void check(boolean condition, String message) {

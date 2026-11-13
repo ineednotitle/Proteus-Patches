@@ -31,6 +31,10 @@ public final class InstagramBlockUrlRequestPatch {
         if (uri == null) return;
 
         String uriString = uri.toString();
+        if (InstagramGhostRequestFilter.shouldBlockUrl(uriString)) {
+            System.out.println("[Proteus][Instagram] Ghost Mode blocked request to: " + uriString);
+            throw new IOException("InstagramBlockUrlRequestPatch: ghost mode blocked request to: " + uriString);
+        }
         for (String blocked : BLOCKED_URLS) {
             if (!SENTINEL.equals(blocked) && uriString.contains(blocked)) {
                 System.out.println("[Proteus][Instagram] Blocking request to: " + uriString);

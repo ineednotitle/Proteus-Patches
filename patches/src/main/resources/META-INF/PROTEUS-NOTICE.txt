@@ -16,7 +16,10 @@ https://github.com/brosssh/instagram-morphe-patches-library (revision
 47ad23ac167098de9ec55272c4f538f25bbf0859, GPL-3.0), with portions of
 MobileConfig flag overriding and package cloning adapted from
 https://github.com/crimera/piko (revision
-297519632c897d19e9f0df0c39e5b315d1a7390b, GPL-3.0). Notice preserved per
+297519632c897d19e9f0df0c39e5b315d1a7390b, GPL-3.0). The Instagram settings
+dialog, Ghost Mode hooks, Reels control flags, in-app browser tools and
+like-animation bridge are adapted from the same piko revision; MobileConfig
+flag IDs are taken from piko's 439.0.0.37.89 mapping. Notice preserved per
 GPLv3 §7(b); see proteus/gpl-3.0.txt.
 
 The project and combined bundle are licensed under GPL-3.0-only. The full
