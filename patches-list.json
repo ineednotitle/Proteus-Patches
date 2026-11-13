@@ -1464,6 +1464,37 @@
       "options": []
     },
     {
+      "name": "Change like animation",
+      "description": "Lets you choose one of Instagram's built-in double-tap like animations, or pick a random one per session, from the Proteus settings dialog. Experimental on builds where Instagram renamed the animation classes.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.instagram.android",
+          "name": "Instagram",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#E1306C",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "439.0.0.37.89",
+              "versionCodes": {
+                "ARM64_V8A": 384510827,
+                "ARMEABI_V7A": 384510838
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Change package name",
       "description": "Installs Google Photos beside the system Photos app by changing package, permissions, providers, and app name.",
       "default": true,
@@ -3680,6 +3711,43 @@
       "options": []
     },
     {
+      "name": "Ghost mode",
+      "description": "Hides typing indicators, prevents DM read receipts, and best-effort blocks story view receipts. Controlled at runtime from the Proteus settings button.",
+      "default": false,
+      "dependencies": [
+        "BytecodePatch",
+        "BytecodePatch",
+        "BytecodePatch",
+        "BytecodePatch",
+        "BytecodePatch",
+        "BytecodePatch",
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.instagram.android",
+          "name": "Instagram",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#E1306C",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "439.0.0.37.89",
+              "versionCodes": {
+                "ARM64_V8A": 384510827,
+                "ARMEABI_V7A": 384510838
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "GmsCore support",
       "description": "Adds MicroG/GmsCore support metadata for Google Photos.",
       "default": true,
@@ -4715,7 +4783,9 @@
       "name": "Limit feed to following profiles",
       "description": "Filters the home feed to display only chronological content from profiles you follow.",
       "default": true,
-      "dependencies": [],
+      "dependencies": [
+        "BytecodePatch"
+      ],
       "compatiblePackages": [
         {
           "packageName": "com.instagram.android",
@@ -5718,6 +5788,35 @@
       "options": []
     },
     {
+      "name": "Proteus settings",
+      "description": "Adds settings and Ghost Mode buttons to the Instagram feed action bar. The dialog controls the runtime options of the other Instagram patches.",
+      "default": false,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.instagram.android",
+          "name": "Instagram",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#E1306C",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "439.0.0.37.89",
+              "versionCodes": {
+                "ARM64_V8A": 384510827,
+                "ARMEABI_V7A": 384510838
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Provide Original app certificate",
       "description": "Automatically reads the signing certificate from the APK you are patching — no original app installed or file provided needed. Only fill the options below if you are patching an APK that was already re-signed (e.g. a previously patched build): in that case point to the original APK file, or enter the certificate manually.",
       "default": false,
@@ -5818,6 +5917,71 @@
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": 28,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Reels double-tap seek",
+      "description": "Enables double-tap skip/rewind controls in Reels. The controls can be disabled at runtime from the Proteus settings button.",
+      "default": true,
+      "dependencies": [
+        "BytecodePatch",
+        "BytecodePatch",
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.instagram.android",
+          "name": "Instagram",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#E1306C",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "439.0.0.37.89",
+              "versionCodes": {
+                "ARM64_V8A": 384510827,
+                "ARMEABI_V7A": 384510838
+              },
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Reels playback speed menu",
+      "description": "Adds Instagram's playback-speed menu to the Reels overflow menu. The speed can be changed at runtime from the Proteus settings button.",
+      "default": true,
+      "dependencies": [
+        "BytecodePatch",
+        "BytecodePatch"
+      ],
+      "compatiblePackages": [
+        {
+          "packageName": "com.instagram.android",
+          "name": "Instagram",
+          "description": null,
+          "apkFileType": "APKM",
+          "appIconColor": "#E1306C",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "439.0.0.37.89",
+              "versionCodes": {
+                "ARM64_V8A": 384510827,
+                "ARMEABI_V7A": 384510838
+              },
+              "isExperimental": false,
+              "minSdk": null,
               "description": null
             }
           ]

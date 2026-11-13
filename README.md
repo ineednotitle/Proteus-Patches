@@ -70,7 +70,7 @@ The catalog below is generated from `patches-list.json`. Expand an app to see it
 compatible versions, patches and options.
 
 <!-- PATCHES_START -->
-> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;217 patches total
+> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;222 patches total
 
 ### Supported apps
 
@@ -89,7 +89,7 @@ compatible versions, patches and options.
 | [Gboard](#app-com-google-android-inputmethod-latin) | 18.5.4.993608717-release-arm64-v8a · 18.5.4.993608717-release-armeabi-v7a | 2 |
 | [Google Photos](#app-com-google-android-apps-photos) | 7.97.0.997578476 | 7 |
 | [Hindustan Times](#app-com-ht-news) | 4.9.16 | 3 |
-| [Instagram](#app-com-instagram-android) | 439.0.0.37.89 | 18 |
+| [Instagram](#app-com-instagram-android) | 439.0.0.37.89 | 23 |
 | [Inure App Manager](#app-app-simple-inure-play) | build107.2.1 | 1 |
 | [Inure App Manager (GitHub)](#app-app-simple-inure) | build107.2.4 | 1 |
 | [Malwarebytes Mobile Security](#app-org-malwarebytes-antimalware) | 5.27.0+564 | 1 |
@@ -377,7 +377,7 @@ compatible versions, patches and options.
 
 <a id="app-com-instagram-android"></a>
 <details>
-<summary><strong>Instagram</strong> · 18 patches</summary>
+<summary><strong>Instagram</strong> · 23 patches</summary>
 <br>
 
 **Compatible versions**
@@ -388,10 +388,12 @@ compatible versions, patches and options.
 | Patch | Description | Options |
 | :--- | :--- | :--- |
 | [Bypass signature check](#bypass-signature-check) | Bypasses Instagram's internal provider signature verification after patching. |  |
+| [Change like animation](#change-like-animation) | Lets you choose one of Instagram's built-in double-tap like animations, or pick a random one per session, from the Proteus settings dialog. Experimental on builds where Instagram renamed the animation classes. |  |
 | [Clone](#clone) | Changes the package name and the app name so you can install the patched app alongside the official Instagram app. Caution: Do not combine with the universal "Change package name" patch. | • Package name<br>• App name |
 | [Disable Reels scrolling](#disable-reels-scrolling) | Disables the endless scrolling behavior in Instagram Reels, preventing swiping to the next Reel. Note: On a clean install, the 'Tip' animation may appear but will stop on its own after a few seconds. |  |
 | [Disable story auto flipping](#disable-story-auto-flipping) | Disable stories automatically flipping/skipping after some seconds. |  |
 | [Disable video autoplay](#disable-video-autoplay) | Disable video autoplay from feed. |  |
+| [Ghost mode](#ghost-mode) | Hides typing indicators, prevents DM read receipts, and best-effort blocks story view receipts. Controlled at runtime from the Proteus settings button. |  |
 | [Hide Instants](#hide-instants) | Hides Instants from DMs page. |  |
 | [Hide Reels save button](#hide-reels-save-button) | Hides the save button from Reels. |  |
 | [Hide Threads profile button](#hide-threads-profile-button) | Hides the Threads button from the profile page action bar (top right of the profile page). |  |
@@ -404,6 +406,9 @@ compatible versions, patches and options.
 | [Hide reshare button](#hide-reshare-button) | Hides the reshare button from both posts and reels. |  |
 | [Hide suggested content](#hide-suggested-content) | Choose the suggested content to hide using the patch options. | • Hide suggested reels<br>• Hide suggested stories<br>• Hide highlights in stories<br>• Hide suggested accounts |
 | [Limit feed to following profiles](#limit-feed-to-following-profiles) | Filters the home feed to display only chronological content from profiles you follow. |  |
+| [Proteus settings](#proteus-settings) | Adds settings and Ghost Mode buttons to the Instagram feed action bar. The dialog controls the runtime options of the other Instagram patches. |  |
+| [Reels double-tap seek](#reels-double-tap-seek) | Enables double-tap skip/rewind controls in Reels. The controls can be disabled at runtime from the Proteus settings button. |  |
+| [Reels playback speed menu](#reels-playback-speed-menu) | Adds Instagram's playback-speed menu to the Reels overflow menu. The speed can be changed at runtime from the Proteus settings button. |  |
 | [Remove build expired popup](#remove-build-expired-popup) | Removes the popup that appears after a while when the app version ages. |  |
 
 </details>
