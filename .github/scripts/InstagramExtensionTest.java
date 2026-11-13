@@ -55,7 +55,7 @@ public final class InstagramExtensionTest {
         );
 
         // 2. HideNavigationButtonsPatch
-        List<Object> tabs = Arrays.asList(NavTab.values());
+        List<Object> tabs = Arrays.asList((Object[]) NavTab.values());
         List<Object> withoutReels = InstagramHideNavigationButtonsPatch.removeNavigationButtonByName(
             tabs, "fragment_clips", "fragmentName"
         );
