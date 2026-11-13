@@ -102,6 +102,10 @@ tasks {
         mainClass.set("app.template.patches.instagram.InstagramPatchTest")
     }
 
+    test {
+        failOnNoDiscoveredTests.set(false)
+    }
+
     check {
         dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram)
     }
