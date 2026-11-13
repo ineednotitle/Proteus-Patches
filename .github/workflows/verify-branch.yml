@@ -42,7 +42,13 @@ jobs:
           bash .github/scripts/test_instagram_extension.sh
 
       - name: Run patches verification tasks
-        run: ./gradlew :patches:check --stacktrace
+        run: |
+          ./gradlew :patches:check --stacktrace > check.log 2>&1 && tail -20 check.log && exit 0
+          echo "=== GREP: check failure ==="
+          grep -n -m 25 -E "What went wrong|FAILURE:|Caused by|Exception|Error|(^|[[:space:]])e:" check.log || true
+          tail -n 60 check.log
+          echo "::error::$(tail -n 35 check.log | tr '\n' ' ' | cut -c1-1200)"
+          exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -73,5 +79,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.7.0
         with:
           name: gradle-error-log
-          path: build.log
+          path: |
+            build.log
+            check.log
           if-no-files-found: ignore
