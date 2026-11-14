@@ -70,7 +70,7 @@ The catalog below is generated from `patches-list.json`. Expand an app to see it
 compatible versions, patches and options.
 
 <!-- PATCHES_START -->
-> **[v2.3.1](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;222 patches total
+> **[v2.3.1](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;229 patches total
 
 ### Supported apps
 
@@ -97,6 +97,7 @@ compatible versions, patches and options.
 | [Mereframe](#app-app-unnamed-rawrecording) | 0.8.4 | 4 |
 | [Mint](#app-com-htmedia-mint) | 5.7.5 · 5.8.4 | 3 |
 | [MUBI](#app-com-mubi) | 100.0 · 99.1 | 16 |
+| [Netflix (Android TV)](#app-com-netflix-ninja) | 13.0.1 build 25028 · 13.2.1 build 27207 · 13.2.2 build 27250 | 6 |
 | [Pinterest](#app-com-pinterest) | 14.41.0 | 4 |
 | [Proton Pass](#app-proton-android-pass) | 1.41.3 | 5 |
 | [Proton Pass (F-Droid)](#app-proton-android-pass-fdroid) | 1.41.3 | 5 |
@@ -104,6 +105,7 @@ compatible versions, patches and options.
 | [Proxyman](#app-com-proxyman-proxymanandroid) | 1.21.0 | 1 |
 | [Reddit](#app-com-reddit-frontpage) | 2026.42.0 · 2026.41.0 · 2026.40.0 · +3 more | 14 |
 | [Strava](#app-com-strava) | 480.15 · 486.9 | 3 |
+| [Table Notes](#app-vivekagarwal-playwithdb) | 20261111 | 1 |
 | [Telegram](#app-org-telegram-messenger) | 12.10.1 | 14 |
 | [Telegram Plus](#app-org-telegram-plus) | 12.10.1.1 | 15 |
 | [Telegram Web](#app-org-telegram-messenger-web) | 12.10.1 | 14 |
@@ -547,6 +549,27 @@ compatible versions, patches and options.
 
 </details>
 
+<a id="app-com-netflix-ninja"></a>
+<details>
+<summary><strong>Netflix (Android TV)</strong> · 6 patches</summary>
+<br>
+
+**Compatible versions**
+
+| 13.0.1 build 25028 | 13.2.1 build 27207 (experimental) | 13.2.2 build 27250 (experimental) |
+| :---: | :---: | :---: |
+
+| Patch | Description | Options |
+| :--- | :--- | :--- |
+| [Clone Netflix](#clone-netflix) | Installs the patched Netflix as a separate app alongside the stock one (package suffix .clone), instead of replacing it. Required on devices where Netflix is a preinstalled system app that can't be uninstalled (most Android TV boxes, Google TV, Fire TV). Keep the stock Netflix installed + enabled — the clone borrows its signature to pass Netflix's native tamper check (stock auto-updating is fine). You just launch the clone instead. Recommended: leave ON. |  |
+| [Disable Netflix CertCheck](#disable-netflix-certcheck) | Neutralises Netflix's DexGuard signing-certificate anti-tamper check so a re-signed build doesn't self-crash on launch. Required for every Netflix patch. |  |
+| [Minimize Network Fingerprint](#minimize-network-fingerprint) | Blanks the local IP / MAC / Wi-Fi SSID the Netflix app reports about your network (keeps interface name/type) and stops the app from reporting your advertising ID (GAID) in its ad-collection telemetry. Reduces network + ad fingerprinting. Does NOT stop the server-side "I'm traveling"/household check (that's driven by your public IP — use a VPN for that). Opt-in / experimental; test on-device. |  |
+| [Remove Netflix ads (bundle engine)](#remove-netflix-ads-bundle-engine) | Bundles the in-process ad-kill script (killads.js) and its loader into the app. This is the ad remover: at launch the app runs the script itself (script mode — no PC, no root, no frida server) and empties Netflix's ad breaks (pre-roll, mid-roll) and the pause-screen ad overlay. Pairs with the loader patch. Default ON. |  |
+| [Remove Netflix ads (loader)](#remove-netflix-ads-loader) | Arms the ad remover: injects the startup call that loads the in-process ad-kill engine (bundled by the companion patch) as early as possible, so ads are emptied before playback. Requires the bundle-engine patch. Default ON. |  |
+| [Suppress Household Prompt](#suppress-household-prompt) | Hides the Netflix "you're traveling" / update-your-household prompt by keeping the client from activating the misdetection challenge session. Does NOT change what Netflix's servers detect (that's driven by your public IP — use a VPN for that); it only suppresses the on-screen prompt. Opt-in / experimental; only takes visible effect when the account would otherwise be prompted. |  |
+
+</details>
+
 <a id="app-com-pinterest"></a>
 <details>
 <summary><strong>Pinterest</strong> · 4 patches</summary>
@@ -682,6 +705,22 @@ compatible versions, patches and options.
 | [Block analytics and data collection](#block-analytics-and-data-collection) | Stops Strava's Braze telemetry bootstrap (session + engagement tracking, endpoint sdk.iad-07.braze.com) before it is configured. Firebase Analytics collection and Facebook auto event logging are already off in Strava's own manifest; this removes the one tracker pipe that is actually live. Push, GPS, and recording keep working. |  |
 | [Force password login (OTP bypass)](#force-password-login-otp-bypass) | Always shows the password login field instead of the OTP code flow. OFF by default: breaks log-in AND sign-up for OTP-only accounts. Enable only if your Strava account has an actual password. |  |
 | [Unlock Premium](#unlock-premium) | Unlocks Strava Premium features. |  |
+
+</details>
+
+<a id="app-vivekagarwal-playwithdb"></a>
+<details>
+<summary><strong>Table Notes</strong> · 1 patch</summary>
+<br>
+
+**Compatible versions**
+
+| 20261111 |
+| :---: |
+
+| Patch | Description | Options |
+| :--- | :--- | :--- |
+| [Table Notes: Unlock premium](#table-notes-unlock-premium) | Unlocks Table Notes premium: PDF / Word / Excel export, publishing and<br>the paid feature set, and removes the premium-tier ad slots (banner and<br>interstitial). Also suppresses the paywall.<br><br>Verified against 20261111. Does not touch Firebase sync of your own<br>tables; the app simply believes every entitlement is owned. |  |
 
 </details>
 

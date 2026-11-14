@@ -198,6 +198,102 @@ public final class MereframeIntegrityHook {
         return new double[]{0d, 1d};
     }
 
+    // ───────────────────────────────────────────────────────────────────────
+    // Length-preserving array fallbacks
+    //
+    // Every array-returning wrapper validates the native result with
+    // `array-length` + a fixed expected size (`p` wants 3, `m` wants 3, `V`
+    // wants 3, `T` wants 12, ...). Returning a fixed two-element array used to
+    // bypass that check but hand the CALLER a short array; callers that read a
+    // higher index then failed elsewhere (the "RAW is safe but it didn't
+    // develop" report). The patch reads the expected length out of the wrapper
+    // and calls these overloads instead.
+    // ───────────────────────────────────────────────────────────────────────
+
+    private static void setStatus(long[] array) {
+        if (array.length > 1) array[1] = 1L;
+    }
+
+    public static boolean[] failOpenBooleanArrayN(Throwable t, int length) {
+        guard(t);
+        boolean[] array = new boolean[length];
+        if (array.length > 1) array[1] = true;
+        return array;
+    }
+
+    public static byte[] failOpenByteArrayN(Throwable t, int length) {
+        guard(t);
+        byte[] array = new byte[length];
+        setStatus(array);
+        return array;
+    }
+
+    private static void setStatus(byte[] array) {
+        if (array.length > 1) array[1] = 1;
+    }
+
+    public static short[] failOpenShortArrayN(Throwable t, int length) {
+        guard(t);
+        short[] array = new short[length];
+        setStatus(array);
+        return array;
+    }
+
+    private static void setStatus(short[] array) {
+        if (array.length > 1) array[1] = 1;
+    }
+
+    public static char[] failOpenCharArrayN(Throwable t, int length) {
+        guard(t);
+        char[] array = new char[length];
+        setStatus(array);
+        return array;
+    }
+
+    private static void setStatus(char[] array) {
+        if (array.length > 1) array[1] = 1;
+    }
+
+    public static int[] failOpenIntArrayN(Throwable t, int length) {
+        guard(t);
+        int[] array = new int[length];
+        setStatus(array);
+        return array;
+    }
+
+    private static void setStatus(int[] array) {
+        if (array.length > 1) array[1] = 1;
+    }
+
+    public static long[] failOpenLongArrayN(Throwable t, int length) {
+        guard(t);
+        long[] array = new long[length];
+        setStatus(array);
+        return array;
+    }
+
+    public static float[] failOpenFloatArrayN(Throwable t, int length) {
+        guard(t);
+        float[] array = new float[length];
+        setStatus(array);
+        return array;
+    }
+
+    private static void setStatus(float[] array) {
+        if (array.length > 1) array[1] = 1f;
+    }
+
+    public static double[] failOpenDoubleArrayN(Throwable t, int length) {
+        guard(t);
+        double[] array = new double[length];
+        setStatus(array);
+        return array;
+    }
+
+    private static void setStatus(double[] array) {
+        if (array.length > 1) array[1] = 1d;
+    }
+
     /**
      * Decide what a wrapper's thrown Throwable means.
      *

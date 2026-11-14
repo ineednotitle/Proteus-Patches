@@ -10,9 +10,13 @@ import app.template.patches.shared.clearBody
 import app.template.patches.shared.ensureRegisters
 import app.template.patches.shared.logUniversal
 import com.android.tools.smali.dexlib2.AccessFlags
+import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.iface.Method
+import com.android.tools.smali.dexlib2.iface.instruction.NarrowLiteralInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 private const val SO_ARM64_PATH = "lib/arm64-v8a/libunnamed_raw.so"
@@ -377,28 +381,42 @@ private fun plantIntegrityHandler(method: MutableMethod, returnType: String) {
     val implementation: MutableMethodImplementation = method.implementation
         ?: throw IllegalStateException("no implementation")
 
-    val handler = handlerSmali(returnType)
+    // Array-returning wrappers validate the native result by length (for
+    // example `p` requires exactly 3 elements). A fixed two-element fallback
+    // bypasses that check but hands the CALLER a shorter array, and callers
+    // that read a higher index then fail in a completely different place —
+    // "the RAW is safe, but it didn't develop" is exactly that failure mode.
+    // Derive the length from the wrapper's own comparison and hand back an
+    // array of the expected size.
+    val expectedLength = if (isArrayType(returnType)) expectedArrayLength(method) else null
+    val handler = handlerSmali(returnType, expectedLength)
         ?: throw IllegalStateException("unsupported return type $returnType")
 
-    val registersNeeded = if (returnType == "J" || returnType == "D") 2 else 1
-    check(implementation.registerCount >= registersNeeded) {
-        "registerCount ${implementation.registerCount} < $registersNeeded"
+    val registersNeeded = when {
+        expectedLength != null -> 2
+        returnType == "J" || returnType == "D" -> 2
+        else -> 1
+    }
+    if (implementation.registerCount < registersNeeded) {
+        method.ensureRegisters(registersNeeded)
     }
 
-    // Labels must be resolved against the ORIGINAL instruction list: `to` is
-    // the end of the method body, before the handler is appended.
+    // Append the handler first, THEN build the labels. A label created for
+    // `instructions.size` before the insertion stays pinned to the end of the
+    // code item, which quietly moved the try range over the handler itself:
+    // a non-integrity Throwable re-thrown by `guard()` was then caught by the
+    // same handler again, looping forever on the caller's thread. The try
+    // range must cover the ORIGINAL body only.
     val endIndex = implementation.instructions.size
-    val from = implementation.newLabelForIndex(0)
-    val to = implementation.newLabelForIndex(endIndex)
-
     method.addInstructions(endIndex, handler)
 
-    // Catch-all: the hook re-throws anything that is not an integrity failure,
-    // so the wide net costs nothing but the handler call.
-    implementation.addCatch(from, to, implementation.newLabelForIndex(endIndex))
+    val from = implementation.newLabelForIndex(0)
+    val handlerStart = implementation.newLabelForIndex(endIndex)
+
+    implementation.addCatch(from, handlerStart, handlerStart)
 }
 
-private fun handlerSmali(returnType: String): String? = when (returnType) {
+private fun handlerSmali(returnType: String, expectedLength: Int?): String? = when (returnType) {
     "V" -> """
         move-exception v0
         invoke-static {v0}, $HOOK_CLASS->failOpenVoid($THROWABLE)V
@@ -414,14 +432,14 @@ private fun handlerSmali(returnType: String): String? = when (returnType) {
     "J" -> wideHandler("failOpenLong", "J")
     "D" -> wideHandler("failOpenDouble", "D")
     "Ljava/lang/String;" -> objectHandler("failOpenString", "Ljava/lang/String;")
-    "[Z" -> objectHandler("failOpenBooleanArray", "[Z")
-    "[B" -> objectHandler("failOpenByteArray", "[B")
-    "[S" -> objectHandler("failOpenShortArray", "[S")
-    "[C" -> objectHandler("failOpenCharArray", "[C")
-    "[I" -> objectHandler("failOpenIntArray", "[I")
-    "[J" -> objectHandler("failOpenLongArray", "[J")
-    "[F" -> objectHandler("failOpenFloatArray", "[F")
-    "[D" -> objectHandler("failOpenDoubleArray", "[D")
+    "[Z" -> arrayHandler("failOpenBooleanArray", "failOpenBooleanArrayN", "[Z", expectedLength)
+    "[B" -> arrayHandler("failOpenByteArray", "failOpenByteArrayN", "[B", expectedLength)
+    "[S" -> arrayHandler("failOpenShortArray", "failOpenShortArrayN", "[S", expectedLength)
+    "[C" -> arrayHandler("failOpenCharArray", "failOpenCharArrayN", "[C", expectedLength)
+    "[I" -> arrayHandler("failOpenIntArray", "failOpenIntArrayN", "[I", expectedLength)
+    "[J" -> arrayHandler("failOpenLongArray", "failOpenLongArrayN", "[J", expectedLength)
+    "[F" -> arrayHandler("failOpenFloatArray", "failOpenFloatArrayN", "[F", expectedLength)
+    "[D" -> arrayHandler("failOpenDoubleArray", "failOpenDoubleArrayN", "[D", expectedLength)
 
     // Unknown reference/array-of-reference shape: there is no way to invent a
     // well-formed instance of it, so hand back null instead of crashing.
@@ -457,3 +475,76 @@ private fun objectHandler(hookName: String, returnType: String) = """
     move-result-object v0
     return-object v0
 """.trimIndent()
+
+/** True for JVM array descriptors such as `[J`, `[Ljava/lang/String;`. */
+private fun isArrayType(descriptor: String): Boolean = descriptor.startsWith("[")
+
+/**
+ * Length the wrapper itself demands from a native array result.
+ *
+ * The R8 shape is always one of
+ *
+ *     array-length vA, vB
+ *     const/4       vC, 0x3
+ *     if-ne         vA, vC, :mismatch
+ *
+ * so scan for an `array-length`, then a small integer constant load and an
+ * `if-eq`/`if-ne` that compares the length register against it. Returns `null`
+ * when no unambiguous length check exists, in which case the fixed-size
+ * fallback is kept.
+ */
+private fun expectedArrayLength(method: MutableMethod): Int? {
+    val instructions = method.implementation?.instructions?.toList() ?: return null
+    for (index in instructions.indices) {
+        if (instructions[index].opcode != Opcode.ARRAY_LENGTH) continue
+        val lengthRegister = (instructions[index] as? OneRegisterInstruction)?.registerA
+            ?: continue
+        for (offset in 1..4) {
+            val candidate = instructions.getOrNull(index + offset) ?: break
+            val opcode = candidate.opcode
+            val literal = when (opcode) {
+                Opcode.CONST_4 ->
+                    (candidate as? NarrowLiteralInstruction)?.narrowLiteral?.let { it shl 28 shr 28 }
+                Opcode.CONST_16, Opcode.CONST ->
+                    (candidate as? NarrowLiteralInstruction)?.narrowLiteral
+                Opcode.IF_EQ, Opcode.IF_NE -> {
+                    val pair = candidate as? TwoRegisterInstruction ?: continue
+                    if (lengthRegister != pair.registerA && lengthRegister != pair.registerB) continue
+                    // The constant load is right before the comparison.
+                    val previous = instructions.getOrNull(index + offset - 1)
+                    when (previous?.opcode) {
+                        Opcode.CONST_4 ->
+                            (previous as? NarrowLiteralInstruction)?.narrowLiteral?.let { it shl 28 shr 28 }
+                        Opcode.CONST_16, Opcode.CONST ->
+                            (previous as? NarrowLiteralInstruction)?.narrowLiteral
+                        else -> null
+                    }
+                }
+                else -> null
+            }
+            if (literal != null && literal in 1..64) return literal
+        }
+    }
+    return null
+}
+
+/**
+ * Array fallback that preserves the wrapper's length contract: the caller gets
+ * an array of exactly the size it checks for, with element 1 (the status code
+ * every Mereframe wrapper reads) set to the "1" pass value.
+ */
+private fun arrayHandler(
+    fixedHook: String,
+    sizedHook: String,
+    returnType: String,
+    expectedLength: Int?,
+): String {
+    if (expectedLength == null) return objectHandler(fixedHook, returnType)
+    return """
+        move-exception v0
+        const/16 v1, 0x${expectedLength.toString(16)}
+        invoke-static {v0, v1}, $HOOK_CLASS->$sizedHook($THROWABLE${"I"})$returnType
+        move-result-object v0
+        return-object v0
+    """.trimIndent()
+}
