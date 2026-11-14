@@ -16,7 +16,7 @@ import com.android.tools.smali.dexlib2.Opcodes
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction10x
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction12x
-import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction21c</new_string>
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction21c
 import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
 import com.android.tools.smali.dexlib2.iface.Method
 import com.android.tools.smali.dexlib2.iface.reference.StringReference
