@@ -17,6 +17,7 @@ import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction10x
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction12x
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction21c
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction22x
 import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
 import com.android.tools.smali.dexlib2.iface.Method
 import com.android.tools.smali.dexlib2.iface.reference.StringReference
@@ -189,9 +190,9 @@ object InstagramPatchTest {
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 12, 12))
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 13, 13))
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 14, 14))
-            addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 16, 16))
-            addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 17, 17))
-            addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 18, 18))
+            addInstruction(BuilderInstruction22x(Opcode.MOVE_FROM16, 16, 16))
+            addInstruction(BuilderInstruction22x(Opcode.MOVE_FROM16, 17, 17))
+            addInstruction(BuilderInstruction22x(Opcode.MOVE_FROM16, 18, 18))
             addInstruction(BuilderInstruction10x(Opcode.RETURN_VOID))
         }
         val method = MutableMethod(
