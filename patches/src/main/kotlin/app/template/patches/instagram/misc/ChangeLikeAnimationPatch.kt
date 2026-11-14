@@ -159,12 +159,21 @@ val instagramChangeLikeAnimationPatch = bytecodePatch(
         // back into the p1 parameter with the wide-capable
         // `move-object/from16`. This mirrors upstream piko, which uses the
         // same p2/p1 parameter registers and only v0 as scratch space.
-        val registers = xdtMethod.getFreeRegisterProvider(0, 1)
-        val animationRegister = registers.getFreeRegister4BitOrNull()
-            ?: throw PatchException(
+        //
+        // The free-register search itself can also fail when the constructor
+        // has no usable register at all, so it is guarded and falls back to
+        // skipping the animation selection instead of failing the whole patch.
+        val animationRegister = try {
+            xdtMethod.getFreeRegisterProvider(0, 1).getFreeRegister4BitOrNull()
+        } catch (exception: IllegalArgumentException) {
+            null
+        }
+        if (animationRegister == null) {
+            throw PatchException(
                 "No free 4-bit register available in " +
                     "XDTUserActivationMetadataImpl.<init> for the like animation selection",
             )
+        }
         xdtMethod.addInstructions(
             0,
             """
