@@ -228,6 +228,16 @@ public final class InstagramExtensionTest {
             "animation values must be exposed"
         );
 
+        // 11. Like animation fallback must never clear the resolved animation.
+        // When no animation is selected (default heart), changeLikeAnimation
+        // returns null so the patch keeps the original p1 value and leaves the
+        // "explicit choice" Boolean false.
+        Object sentinel = new Object();
+        check(
+            InstagramLikeAnimation.changeLikeAnimation(sentinel) == null,
+            "changeLikeAnimation must return null when no animation is selected"
+        );
+
         System.out.println("Instagram extension helper tests passed");
     }
 
