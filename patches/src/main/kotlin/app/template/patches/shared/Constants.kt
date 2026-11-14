@@ -1084,6 +1084,26 @@ val NEWSBREAKLITE_COMPATIBILITY = Compatibility(
         targets = listOf(AppTarget(version = "26.34.0", versionCode = 26340001))
     )
 
+val NETFLIX_COMPATIBILITY = Compatibility(
+        name = "Netflix (Android TV)",
+        packageName = "com.netflix.ninja",
+        description = "Netflix Android TV (com.netflix.ninja). The same APK and ad pipeline are " +
+            "used in India and worldwide; region only changes catalogue and ad fill.",
+        apkFileType = ApkFileType.APKM,
+        appIconColor = 0xE50914,
+        targets = listOf(
+            // Verified Android TV target (armeabi-v7a). The same APK is served in
+            // India and everywhere else; region does not change the package or the
+            // ad pipeline.
+            AppTarget(version = "13.0.1 build 25028"),
+            // Newer builds supported experimentally: the Application + CertCheck
+            // anchors were re-verified, but the upstream ad-kill was validated on
+            // 13.0.1 first.
+            AppTarget(version = "13.2.1 build 27207", isExperimental = true),
+            AppTarget(version = "13.2.2 build 27250", isExperimental = true),
+        )
+    )
+
 val NINJVAPN_COMPATIBILITY = Compatibility(
         name = "Ninja VPN",
         packageName = "app.ninjavpn.android",
@@ -1612,6 +1632,16 @@ val SUPER_FILE_COMPATIBILITY = Compatibility(
         apkFileType = ApkFileType.XAPK,
         appIconColor = 0x1565C0,
         targets = listOf(AppTarget(version = "1.5.6.3", versionCode = 77))
+    )
+
+val TABLE_NOTES_COMPATIBILITY = Compatibility(
+        name = "Table Notes",
+        packageName = "vivekagarwal.playwithdb",
+        description = "Table Notes - Mobile Excel. Verified against the 20261111 build; " +
+            "the entitlement field names are R8 output and are checked at patch time.",
+        apkFileType = ApkFileType.APKM,
+        appIconColor = 0x3F51B5,
+        targets = listOf(AppTarget(version = "20261111", versionCode = 20261111))
     )
 
 val TAGTRACKER_COMPATIBILITY = Compatibility(

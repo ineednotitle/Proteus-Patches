@@ -15,6 +15,51 @@ current status page and the triage runbook for field crashes.
 | Unlock Pro features | off | Unlocks `Qu.k/m` (full `Llr.p` set), neutralizes `Bf1c089` Paywall/session/receipt gates (`e`, `g`, `b`, `c`, `i`, `h`, `d`), and patches native `0x242048`/`0x244680` in `libunnamed_raw.so` so Pro capture & `PhotoEditActivity` run without paywall popups or `SecurityException` crashes |
 | Fix Firebase after re-signing (universal) | off | Needed if Firebase services break after re-signing |
 
+## 2026-11-14 — issue #34: no crash, but photos "didn't develop" and video is 0:00 (FIXED in the v2.3.1 re-cut)
+
+The crash is gone after the v2.3.1 wrapper guards, but the reporter still sees
+`6 didn't develop — The RAW is safe` and a zero-length video. That is the
+signature of a **swallowed** integrity throw: the native encode call fails, the
+handler returns a fabricated value, and the encode path silently produces no
+output while the RAW on disk is untouched.
+
+The wrapper guard had a real defect for array-returning natives. Every wrapper
+validates the native result by length, and the lengths differ per method:
+
+| Wrapper | Native contract |
+|---|---|
+| `p(JJJIIIIZZ)[J` | exactly **3** longs |
+| `a()[J` | exactly **3** longs |
+| `V(IJIIZ)[J` | exactly **3** longs |
+| `m(IJIJJIIJD)[J` | exactly **3** longs |
+| `T(...)[D` | exactly **12** doubles |
+
+The old handler always returned a two-element array. It bypassed the wrapper's
+own check but handed the caller a short array, so callers that read element 2
+(`V`), or compare the length again, failed somewhere else — the develop worker
+turned that into "didn't develop".
+
+Fix: the sweep now reads the expected length out of each wrapper's own
+`array-length` + `const` + `if-ne` sequence while patching and calls a
+length-preserving `failOpen<Kind>ArrayN(Throwable, int)` that returns an array
+of exactly that size with element 1 (the status slot every wrapper reads) set
+to `1`. The fixed-size overloads remain as the fallback for wrappers without an
+explicit length check.
+
+Triage if a build still reports "didn't develop":
+
+1. The patch log line `guarded in Lapp/unnamed/rawrecording/...` lists every
+   wrapper that got a handler; if `p` or `i(Lvp;I)V` is in the "left on the
+   native verdict" list, the sweep could not guard it and the crash-free
+   guarantee is gone for that wrapper.
+2. `[Proteus][Integrity] wrapper integrity throw contained: ...` in logcat
+   means a guard fired. That is the wrapper whose native call is still
+   rejecting the re-signed build; the next step is to stub that native entry
+   point rather than guess at its return value.
+3. If no guard line appears and the operation still produces nothing, the
+   failure is not the integrity gate — collect a logcat of the develop run
+   before re-pinning fingerprints.
+
 ## Native integrity & Pro-unlock root causes (0.8.4 / vc 118 ELF + DEX analysis)
 
 Two distinct layers caused failures even when `B1e6ad...d()` or `Qu.k()` were patched alone:

@@ -197,6 +197,25 @@ val unlockProPatch = bytecodePatch(
             )
         }
 
-        logUniversal("Unlock Pro: LQu.k/m, Bf1c089.* session/guard gates, and native Pro checks unlocked.")
+        // 10. Paywall funnel Ul.X(MainActivity, Llr;, String, String)Z -> true
+        // When Qu.k() reports every feature as owned, the paywall still calls
+        // into the licensing SDK; on a re-signed build that call can fail and
+        // fall through to the Pro upsell sheet. Returning true skips the upsell.
+        Fingerprint(
+            definingClass = "LUl;",
+            name = "X",
+            returnType = "Z",
+            parameters = listOf(
+                "Lapp/unnamed/rawrecording/MainActivity;",
+                "Llr;",
+                "Ljava/lang/String;",
+                "Ljava/lang/String;",
+            ),
+        ).method.apply {
+            ensureRegisters(6)
+            addInstructions(0, "const/4 v0, 0x1\nreturn v0")
+        }
+
+        logUniversal("Unlock Pro: LQu.k/m, Bf1c089.* session/guard gates, native Pro checks and Ul.X paywall funnel unlocked.")
     }
 }
