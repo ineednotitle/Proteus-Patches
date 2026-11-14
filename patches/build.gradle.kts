@@ -102,12 +102,20 @@ tasks {
         mainClass.set("app.template.patches.instagram.InstagramPatchTest")
     }
 
+    val testRedditCommentTree by registering(JavaExec::class) {
+        description = "Test Reddit comment-tree shape discovery"
+        group = "verification"
+        dependsOn(testClasses)
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("app.template.patches.reddit.shared.RedditCommentTreeTest")
+    }
+
     test {
         failOnNoDiscoveredTests.set(false)
     }
 
     check {
-        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram)
+        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram, testRedditCommentTree)
     }
 
     // Used by gradle-semantic-release-plugin.
