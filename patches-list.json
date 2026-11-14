@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "patches": [
     {
       "name": "AMOLED dark theme",
@@ -1403,7 +1403,7 @@
     },
     {
       "name": "Bypass native integrity checks",
-      "description": "Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) so camera preview, ISP processing, and RAW capture run normally on re-signed builds, while keeping the JVM session fallback active. Required together with 'Allow re-signed/sideloaded installs'.",
+      "description": "Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) and wraps the session-opening plus every other native-calling bridge wrapper in a real JVM try/catch that fails open on integrity errors. Required together with 'Allow re-signed/sideloaded installs'.",
       "default": true,
       "dependencies": [
         "RawResourcePatch"
