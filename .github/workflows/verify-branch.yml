@@ -1,9 +1,6 @@
-name: Verify branch build
+name: Verify patch bundle
 
 on:
-  push:
-    branches:
-      - arena/c7d523d0-proteus-patches
   workflow_dispatch:
 
 permissions:
