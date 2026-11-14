@@ -1983,7 +1983,7 @@ val LEAP_FITNESS_ALL = arrayOf(
         ),
         targets = listOf(
             AppTarget(
-                version = "2026.42.0", // Verified against the real 2642020 bytecode (vc 2642020, Android 10+)
+                version = "2026.42.0", // Verified against the public APKM (vc 2642001); 2026.42.0 also ships other versionCodes
                 minSdk = 29
             ),
             AppTarget(
