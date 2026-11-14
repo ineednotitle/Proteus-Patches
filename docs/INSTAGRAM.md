@@ -73,6 +73,27 @@ If Instagram changes `LikeActionView.setUpCustomLikesAnimation` or the
 `XDTUserActivationMetadataImpl` constructor in a later build, the patch fails at
 apply time rather than shipping a broken hook.
 
+### Register pressure in the metadata constructor
+
+`XDTUserActivationMetadataImpl.<init>` on `439.0.0.37.89` is register
+saturated: every register in the frame is live, so there is no room for two
+scratch registers. An earlier revision of this patch requested two free
+registers and failed at apply time with:
+
+```
+app.morphe.patcher.patch.PatchException: No free registers available
+Caused by: java.lang.IllegalStateException: No free registers available
+	at app.template.patches.shared.FreeRegisterProvider.getFreeRegister(FreeRegisterProvider.kt:117)
+	at app.template.patches.instagram.misc.ChangeLikeAnimationPatchKt...
+```
+
+The patch now needs only **one** 4-bit scratch register (required by the
+`move-result-object` 11x instruction) and carries the "explicit choice" Boolean
+in the `p2` parameter register, matching upstream piko. The selected animation
+is written back into the `p1` parameter with the wide-capable
+`move-object/from16`. When no animation is selected, the original animation is
+left untouched instead of being replaced with `null`.
+
 ## Browser tools
 
 The settings dialog includes three in-app WebView tools:

@@ -56,12 +56,16 @@ public final class InstagramLikeAnimation {
      * patch uses the null result to keep the constructor's "explicit choice"
      * flag false; the metadata contract treats a null animation as the native
      * default.</p>
+     *
+     * <p>On an unexpected error the incoming {@code defaultAnimation} is
+     * returned instead of {@code null}, so a failure never clears the
+     * animation the app already resolved.</p>
      */
     public static Object changeLikeAnimation(Object defaultAnimation) {
         try {
             return selectedAnimation();
         } catch (Throwable ignored) {
-            return null;
+            return defaultAnimation;
         }
     }
 

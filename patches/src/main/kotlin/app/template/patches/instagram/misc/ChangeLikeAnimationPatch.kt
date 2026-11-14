@@ -81,7 +81,7 @@ val instagramChangeLikeAnimationPatch = bytecodePatch(
 
     execute {
         val xdtMethod = XDTUserActivationMetadataImplInitFingerprint.method
-        if (xdtMethod.parameterTypes.size < 2 ||
+        if (xdtMethod.parameterTypes.size != 2 ||
             !xdtMethod.parameterTypes[0].startsWith("L") ||
             xdtMethod.parameterTypes[1] != "Ljava/lang/Boolean;"
         ) {
@@ -147,21 +147,35 @@ val instagramChangeLikeAnimationPatch = bytecodePatch(
         // Select the animation in the user-activation metadata constructor. The
         // extra Boolean marks the value as an explicit choice, matching the
         // native metadata contract.
-        val registers = xdtMethod.getFreeRegisterProvider(0, 2)
-        val resultRegister = registers.getFreeRegister()
-        val flagRegister = registers.getFreeRegister()
+        //
+        // Register pressure: on 439.0.0.37.89 this constructor is register
+        // saturated and asking FreeRegisterProvider for *two* scratch
+        // registers fails with "No free registers available".
+        //
+        // Only one scratch register is needed, and it must be a 4-bit
+        // register because `move-result-object` is an 11x instruction. The
+        // Boolean flag is carried by the p2 parameter register (it is already
+        // a `Ljava/lang/Boolean;`), and the selected animation is written
+        // back into the p1 parameter with the wide-capable
+        // `move-object/from16`. This mirrors upstream piko, which uses the
+        // same p2/p1 parameter registers and only v0 as scratch space.
+        val registers = xdtMethod.getFreeRegisterProvider(0, 1)
+        val animationRegister = registers.getFreeRegister4BitOrNull()
+            ?: throw PatchException(
+                "No free 4-bit register available in " +
+                    "XDTUserActivationMetadataImpl.<init> for the like animation selection",
+            )
         xdtMethod.addInstructions(
             0,
             """
-                sget-object v$flagRegister, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
+                sget-object p2, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
                 invoke-static {p1}, $EXTENSION_CLASS_DESCRIPTOR->changeLikeAnimation(Ljava/lang/Object;)Ljava/lang/Object;
-                move-result-object v$resultRegister
-                if-eqz v$resultRegister, :proteus_keep_animation
-                sget-object v$flagRegister, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
+                move-result-object v$animationRegister
+                if-eqz v$animationRegister, :proteus_keep_animation
+                sget-object p2, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
+                check-cast v$animationRegister, $animationEnumClassType
+                move-object/from16 p1, v$animationRegister
                 :proteus_keep_animation
-                check-cast v$resultRegister, $animationEnumClassType
-                move-object/from16 p1, v$resultRegister
-                move-object/from16 p2, v$flagRegister
             """.trimIndent(),
         )
     }
