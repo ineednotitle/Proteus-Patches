@@ -70,7 +70,7 @@ The catalog below is generated from `patches-list.json`. Expand an app to see it
 compatible versions, patches and options.
 
 <!-- PATCHES_START -->
-> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;222 patches total
+> **[v2.3.1](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;222 patches total
 
 ### Supported apps
 
@@ -492,7 +492,7 @@ compatible versions, patches and options.
 | Patch | Description | Options |
 | :--- | :--- | :--- |
 | [Allow re-signed/sideloaded installs](#allow-re-signed-sideloaded-installs) | Neutralizes Mereframe's install-integrity checks so patched (re-signed) builds start normally instead of showing the installation-refused screen. Required for any other patch here to be usable. |  |
-| [Bypass native integrity checks](#bypass-native-integrity-checks) | Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) so camera preview, ISP processing, and RAW capture run normally on re-signed builds, while keeping the JVM session fallback active. Required together with 'Allow re-signed/sideloaded installs'. |  |
+| [Bypass native integrity checks](#bypass-native-integrity-checks) | Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) and wraps the session-opening plus every other native-calling bridge wrapper in a real JVM try/catch that fails open on integrity errors. Required together with 'Allow re-signed/sideloaded installs'. |  |
 | [Diagnostic crash log](#diagnostic-crash-log) | DIAGNOSTIC ONLY - writes the full stack trace to Downloads/mereframe-crash-*.txt when the app crashes, for remote diagnosis. Off by default; enable when asked to produce a crash log. Chain-forwards to the original crash handler. |  |
 | [Unlock Pro features](#unlock-pro-features) | Unlocks all Mereframe Pro features locally across both the Kotlin entitlement resolver (Qu.k/m) and the native license/session verifier (Bf1c089 + libunnamed_raw.so), eliminating paywall popups and capture/editor SecurityException crashes. Pair with 'Allow re-signed/sideloaded installs' and 'Bypass native integrity checks'. |  |
 
