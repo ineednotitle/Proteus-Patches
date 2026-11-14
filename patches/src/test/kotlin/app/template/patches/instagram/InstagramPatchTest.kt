@@ -163,17 +163,17 @@ object InstagramPatchTest {
         // Every register is live (p0/p1/p2 plus v0..v2 all touched), so a
         // free-register search finds fewer than two 4-bit registers.
         val body = MutableMethodImplementation(19).apply {
-            // Every 4-bit local (v0-v14) is live: each move reads and writes
+            // Every register except one is live: each move reads and writes
             // the same register, so the free-register search sees them as
-            // read-after-write and cannot hand them out. The three parameter
-            // registers (this, the animation enum and the Boolean) sit at
-            // v16-v18, leaving only v15 unused.
+            // used and cannot hand them out. The three parameter registers
+            // (this, the animation enum and the Boolean) sit at v16-v18,
+            // leaving only v15 unused.
             //
             // This reproduces the register-saturated
             // XDTUserActivationMetadataImpl.<init> frame that made the old
             // patch fail with "No free registers available": only a single
-            // 4-bit register (v15) is left, so a request for two fails while
-            // a request for one succeeds.
+            // 4-bit register is left, so a request for two fails while a
+            // request for one succeeds.
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 0, 0))
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 1, 1))
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 2, 2))
@@ -189,6 +189,9 @@ object InstagramPatchTest {
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 12, 12))
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 13, 13))
             addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 14, 14))
+            addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 16, 16))
+            addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 17, 17))
+            addInstruction(BuilderInstruction12x(Opcode.MOVE_OBJECT, 18, 18))
             addInstruction(BuilderInstruction10x(Opcode.RETURN_VOID))
         }
         val method = MutableMethod(
