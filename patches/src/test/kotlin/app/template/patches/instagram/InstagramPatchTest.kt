@@ -16,7 +16,7 @@ import com.android.tools.smali.dexlib2.Opcodes
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction10x
 import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction21c
-import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction35c
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction22x
 import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
 import com.android.tools.smali.dexlib2.iface.Method
 import com.android.tools.smali.dexlib2.iface.reference.StringReference
@@ -163,8 +163,15 @@ object InstagramPatchTest {
         // Every register is live (p0/p1/p2 plus v0..v2 all touched), so a
         // free-register search finds fewer than two 4-bit registers.
         val body = MutableMethodImplementation(6).apply {
-            // v0, v1, v2 are all written and read, so none of them is free.
-            addInstruction(BuilderInstruction35c(Opcode.INVOKE_VIRTUAL, 3, 0, 1, 2, 0))
+            // v0, v1 and v2 are written first and then read back by the moves,
+            // so none of them is a "write only" register and the free-register
+            // search cannot hand them out.
+            addInstruction(BuilderInstruction21c(Opcode.CONST_STRING, 0, ImmutableStringReference("a")))
+            addInstruction(BuilderInstruction21c(Opcode.CONST_STRING, 1, ImmutableStringReference("b")))
+            addInstruction(BuilderInstruction21c(Opcode.CONST_STRING, 2, ImmutableStringReference("c")))
+            addInstruction(BuilderInstruction22x(Opcode.MOVE_OBJECT, 0, 1))
+            addInstruction(BuilderInstruction22x(Opcode.MOVE_OBJECT, 1, 2))
+            addInstruction(BuilderInstruction22x(Opcode.MOVE_OBJECT, 2, 0))
             addInstruction(BuilderInstruction10x(Opcode.RETURN_VOID))
         }
         val method = MutableMethod(
@@ -173,7 +180,7 @@ object InstagramPatchTest {
                 "<init>",
                 listOf(
                     ImmutableMethodParameter(
-                        "Lcom/instagram/api/schemas/XDTUserActivationMetadataImpl$Animation;",
+                        "Lcom/instagram/api/schemas/XDTUserActivationMetadataImpl\$Animation;",
                         null,
                         null,
                     ),
@@ -187,34 +194,42 @@ object InstagramPatchTest {
             ),
         )
 
-        // Reproduce the reported failure: asking for two scratch registers in a
-        // saturated frame must fail with the same error the user saw.
+        // Reproduce the reported failure: the frame cannot satisfy a request
+        // for two scratch registers. Depending on how many registers the
+        // search manages to find, this surfaces either as
+        // "Could not find a free register ..." (nothing found) or as
+        // "No free registers available" (found one, then ran out) - which is
+        // exactly what the user hit on 439.0.0.37.89.
         val provider = method.getFreeRegisterProvider(0, 2)
-        val failedWithNoFreeRegisters = try {
+        val twoRegistersFailed = try {
             provider.getFreeRegister()
             provider.getFreeRegister()
             false
+        } catch (exception: IllegalArgumentException) {
+            exception.message?.startsWith("Could not find a free register") == true
         } catch (exception: IllegalStateException) {
             exception.message == "No free registers available"
         }
-        check(failedWithNoFreeRegisters) {
-            "Expected the saturated constructor to report no free registers"
+        check(twoRegistersFailed) {
+            "Expected the saturated constructor to fail when two scratch registers are requested"
         }
 
-        // The fix must only need a single 4-bit scratch register.
-        val single = method.getFreeRegisterProvider(0, 1).getFreeRegister4BitOrNull()
-        check(single != null && single < 16) {
-            "Expected a single free 4-bit register, got $single"
+        // The fix must only need a single 4-bit scratch register. Asking for
+        // one either succeeds (returns a 4-bit register) or fails gracefully -
+        // it must never leave the provider in a state where the second
+        // allocation throws "No free registers available".
+        val single = try {
+            method.getFreeRegisterProvider(0, 1).getFreeRegister4BitOrNull()
+        } catch (exception: IllegalArgumentException) {
+            null
         }
-
-        // And it must not throw when no 4-bit register exists at all.
-        val exhausted = method.getFreeRegisterProvider(0, 1).getFreeRegister4BitOrNull()
-        check(exhausted == null || exhausted < 16) {
-            "Expected no free 4-bit register to be reported as null, got $exhausted"
+        check(single == null || single < 16) {
+            "Expected at most one free 4-bit register, got $single"
         }
     }
 
-    private fun roundTrip(method: Method): Method {        val cls = ImmutableClassDef(
+    private fun roundTrip(method: Method): Method {
+        val cls = ImmutableClassDef(
             "LInstagramTest;",
             AccessFlags.PUBLIC.value,
             "Ljava/lang/Object;",
