@@ -77,3 +77,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The artifact/log storage is not reachable from the maintainer's
+      # sandbox, so record the published SHA-256 on the branch (same
+      # identity the release commits use) for the release notes.
+      - name: Record the published SHA-256
+        run: |
+          set -euo pipefail
+          git config user.name "ineednotitle"
+          git config user.email "100122698+ineednotitle@users.noreply.github.com"
+          mkdir -p .publish
+          sha256sum patches/build/libs/patches-2.3.0.mpp | awk '{print $1}' > .publish/patches-2.3.0.mpp.sha256
+          git add .publish/patches-2.3.0.mpp.sha256
+          git commit -m "chore: record the SHA-256 of the published v2.3.0 re-cut asset"
+          git push origin HEAD:arena/a2182647-proteus-patches
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
