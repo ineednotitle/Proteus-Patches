@@ -78,8 +78,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # The artifact/log storage is not reachable from the maintainer's
-      # sandbox, so record the published SHA-256 on the branch (same
+      # Runner artifact/log storage is not reachable from outside the CI
+      # network, so record the published SHA-256 on the branch (same
       # identity the release commits use) for the release notes.
       - name: Record the published SHA-256
         run: |
