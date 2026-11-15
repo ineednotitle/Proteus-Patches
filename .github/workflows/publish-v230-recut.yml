@@ -1,0 +1,79 @@
+name: Publish v2.3.0 re-cut (.mpp)
+
+# One-off re-cut publisher (same convention as the earlier "Publish v2.x"
+# workflows). Builds the Android bundle on this branch and uploads it to the
+# existing v2.3.0 release, replacing the earlier asset that predates the
+# #34/#35/#29 fixes.
+#
+# The job is gated on a marker commit ("publish-recut-v230" in the head
+# commit message) so the upload happens deliberately, not on every push.
+
+on:
+  push:
+    branches:
+      - arena/a2182647-proteus-patches
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build and publish .mpp to v2.3.0
+    if: contains(github.event.head_commit.message, 'publish-recut-v230')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Setup Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build Android patch bundle
+        run: ./gradlew buildAndroid --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test Pinterest video URLs and Instagram extension helpers
+        run: |
+          bash .github/scripts/test_pinterest_video_urls.sh
+          bash .github/scripts/test_instagram_extension.sh
+
+      - name: Test permission removal, Brave, Instagram, and Reddit helpers
+        run: ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy :patches:testInstagram :patches:testRedditCommentTree --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Same build-then-metadata sequence the release prepareCmd uses:
+      # regenerate the list, stamp the version from gradle.properties, then
+      # verify the bundle against the list and the remote-source metadata.
+      - name: Generate patch metadata
+        run: |
+          ./gradlew generatePatchesList --stacktrace
+          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
+          jq ".version=\"$VERSION\"" patches-list.json > patches-list.json.tmp && mv patches-list.json.tmp patches-list.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify Android bundle and remote source metadata
+        run: |
+          python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
+          python3 .github/scripts/verify_android_bundle.py "patches/build/libs/patches-${VERSION}.mpp" "$VERSION" --patch-list patches-list.json
+          python3 .github/scripts/verify_patch_source.py patches-bundle.json "$VERSION"
+
+      - name: Publish to release v2.3.0
+        run: |
+          set -euo pipefail
+          sha256sum patches/build/libs/patches-2.3.0.mpp
+          ls -l patches/build/libs/patches-2.3.0.mpp
+          gh release upload v2.3.0 patches/build/libs/patches-2.3.0.mpp --clobber
+          gh release view v2.3.0 --json assets --template '{{range .assets}}{{.name}} {{.Size}}{{"\n"}}{{end}}'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
