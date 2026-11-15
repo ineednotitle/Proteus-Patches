@@ -35,6 +35,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * they are deliberately only referenced from here so the patch has exactly
  * one place to change per build. Everything resolves reflectively; ANY
  * mismatch or throw degrades to the supplied fallback instead of crashing.
+ *
+ * FIELD TRIAGE: the sweep handlers log EACH DISTINCT rejection fingerprint
+ * once (exception class + message + the throwing frame, capped at
+ * {@value #MAX_LOGGED_DISTINCT} entries). A swallowed refusal is exactly the
+ * failure mode where the app keeps running but the protected operation
+ * produces no output, and the throwing frame of a native refusal names the
+ * JNI method that refused the call — which is the input for locating that
+ * function in libunnamed_raw.so and stubbing it like the integrity gates.
  */
 public final class MereframeIntegrityHook {
 
@@ -43,6 +51,11 @@ public final class MereframeIntegrityHook {
     private static final String NATIVE_METHOD = "nd2cccb916f63efbcf8b5b19b";
 
     private static final AtomicBoolean LOGGED = new AtomicBoolean(false);
+
+    /** Upper bound on distinct rejection fingerprints kept (and logged). */
+    static final int MAX_LOGGED_DISTINCT = 12;
+    private static final java.util.Set<String> LOGGED_FINGERPRINTS =
+            java.util.Collections.synchronizedSet(new java.util.LinkedHashSet<String>());
 
     private MereframeIntegrityHook() {}
 
@@ -309,7 +322,40 @@ public final class MereframeIntegrityHook {
             // RuntimeException regardless of the compiler's inference rules.
             MereframeIntegrityHook.<RuntimeException>sneakyThrow(t);
         }
-        logOnce("wrapper integrity throw contained: " + t);
+        logRejectionFingerprintOnce(t);
+    }
+
+    /**
+     * Log a swallowed rejection once per distinct fingerprint (bounded).
+     *
+     * Unlike {@link #logOnce(String)}, this does not stop after the first
+     * refusal: the capture pipeline has more than one native entry point, and
+     * every distinct refusal is a different function to stub. The set is
+     * bounded so a pathological loop cannot flood logcat.
+     */
+    static void logRejectionFingerprintOnce(Throwable t) {
+        synchronized (LOGGED_FINGERPRINTS) {
+            if (LOGGED_FINGERPRINTS.size() >= MAX_LOGGED_DISTINCT) {
+                return;
+            }
+            String fingerprint = rejectionFingerprint(t);
+            if (LOGGED_FINGERPRINTS.add(fingerprint)) {
+                System.out.println("[Proteus][Integrity] " + fingerprint);
+            }
+        }
+    }
+
+    /**
+     * Class + message + the frame that actually threw. For a native refusal
+     * the top frame is the JNI method (e.g.
+     * `app.unnamed.rawrecording.b.B1e6…->n72c…(Native Method)`), which is the
+     * anchor for finding the refusing function in the shared library.
+     */
+    private static String rejectionFingerprint(Throwable t) {
+        StackTraceElement[] stack = t.getStackTrace();
+        StackTraceElement top = stack.length > 0 ? stack[0] : null;
+        return "wrapper refusal contained: " + t.getClass().getName()
+                + " \"" + t.getMessage() + "\" at " + top;
     }
 
     /**

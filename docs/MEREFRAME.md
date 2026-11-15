@@ -15,6 +15,59 @@ current status page and the triage runbook for field crashes.
 | Unlock Pro features | off | Unlocks `Qu.k/m` (full `Llr.p` set), neutralizes `Bf1c089` Paywall/session/receipt gates (`e`, `g`, `b`, `c`, `i`, `h`, `d`), and patches native `0x242048`/`0x244680` in `libunnamed_raw.so` so Pro capture & `PhotoEditActivity` run without paywall popups or `SecurityException` crashes |
 | Fix Firebase after re-signing (universal) | off | Needed if Firebase services break after re-signing |
 
+## 2026-11-15 — issue #34 (part 2): no crash, but capture still produces no output (OPEN)
+
+The crash, the array length-contract bug and the Pro paywall are all resolved
+(the reporter confirms: the app no longer crashes and shows "premium version
+is purchased"). What remains on the reporter's device (Pixel 7 Pro,
+Android 17): **photos and videos are still not saved, in any format.**
+
+The remaining failure is an **operation-level native refusal**. The five
+integrity gates stubbed in Stage 0 are the *checkers* — they throw
+`SecurityException("app integrity check failed")`. The capture/develop
+pipeline has a separate gate that throws a **different** exception from
+inside the operation itself:
+
+```text
+java.lang.SecurityException: Protected operation unavailable
+    at app.unnamed.rawrecording.b.B1e6ad8077f6880e309d8da4b.n72c9e116bb85d91fbf8a15b2(Native Method)
+    at app.unnamed.rawrecording.b.B1e6ad8077f6880e309d8da4b.p(SourceFile:24)
+    at Jm.Y0(SourceFile:191)
+    at C3.<init>(SourceFile:1230)
+    ... st.onCaptureCompleted
+```
+
+That function is not one of the five stubbed checkers: at operation time it
+decides whether this (re-signed) build may perform the protected camera
+operation, and refuses. The wrapper sweep cannot restore the functionality by
+returning a fabricated "pass" — the output files are written by the native
+pipeline, so a swallowed refusal yields a running app with no output, which
+is exactly the field report. The refusal has to be answered at the binary
+level: the refusing entry point in `lib/arm64-v8a/libunnamed_raw.so` must be
+identified and stubbed the same way as the five integrity gates (globally
+unique 96-byte prologue + `bti jc; mov w0, #1; ret`).
+
+**What the current re-cut adds for this:** the sweep handlers now log
+**each distinct rejection fingerprint once** (exception class + message + the
+throwing frame; capped at 12 entries). For a native refusal the throwing
+frame names the JNI method that refused the call — on a pinned build
+(0.8.4 / vc 118) that is the direct input for locating the function in the
+`.so`. Previously only the first refusal of a process was logged, which hid
+the operation-level gate behind the first integrity throw.
+
+Triage if capture/develop still produces nothing after the re-cut:
+
+1. Collect logcat during a capture attempt and keep every
+   `[Proteus][Integrity] wrapper refusal contained: …` line. The one whose
+   message is `Protected operation unavailable` is the operation-level gate;
+   its frame (`…->n72c…(Native Method)`) is the JNI anchor.
+2. If NO such line appears, the failing wrapper was not guarded — collect the
+   `Bypass native integrity: …` lines from the patching log (the guarded /
+   left lists) with the report.
+3. Send those lines plus the app versionName/versionCode (expected
+   `0.8.4` / `118`). With the throwing JNI method in hand the refusing
+   function can be pinned by prologue and stubbed in the next re-cut.
+
 ## 2026-11-14 — issue #34: no crash, but photos "didn't develop" and video is 0:00 (FIXED in the v2.3.1 re-cut)
 
 The crash is gone after the v2.3.1 wrapper guards, but the reporter still sees
