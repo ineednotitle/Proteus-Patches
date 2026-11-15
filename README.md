@@ -12,10 +12,12 @@ patch bundle for Android. It removes ads, trackers and privacy-hostile defaults
 from **31 popular apps**, and ships **23 universal patches** that work on almost
 any APK.
 
-> **Current pre-release:** [v2.2.10](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.2.10) —
-> Reddit listing filters, autoplay and external-browser controls, deleted-content
-> restore, and a rewritten Mereframe Pro unlock. Build and patch-application
-> verified; on-device testing is community-driven.
+> **Current pre-release:** [v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0) —
+> re-cut with the Reddit deleted-comments fix (applies on every 2026.42.0
+> build), the Mereframe crash + capture-guard fixes with per-rejection
+> diagnostics, the Table Notes premium unlock, and Netflix (Android TV)
+> support. Build and patch-application verified; on-device testing is
+> community-driven.
 
 [![Add to Morphe](https://img.shields.io/badge/Add_to-Morphe-1f6feb?style=for-the-badge)](https://morphe.software/add-source?github=ineednotitle/Proteus-Patches)
 [![Releases](https://img.shields.io/badge/Download-Releases-0f172a?style=for-the-badge)](https://github.com/ineednotitle/Proteus-Patches/releases)
@@ -70,7 +72,7 @@ The catalog below is generated from `patches-list.json`. Expand an app to see it
 compatible versions, patches and options.
 
 <!-- PATCHES_START -->
-> **[v2.3.1](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;229 patches total
+> **[v2.3.0](https://github.com/ineednotitle/Proteus-Patches/releases/tag/v2.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;229 patches total
 
 ### Supported apps
 
