@@ -15,12 +15,14 @@ current status page and the triage runbook for field crashes.
 | Unlock Pro features | off | Unlocks `Qu.k/m` (full `Llr.p` set), neutralizes `Bf1c089` Paywall/session/receipt gates (`e`, `g`, `b`, `c`, `i`, `h`, `d`), and patches native `0x242048`/`0x244680` in `libunnamed_raw.so` so Pro capture & `PhotoEditActivity` run without paywall popups or `SecurityException` crashes |
 | Fix Firebase after re-signing (universal) | off | Needed if Firebase services break after re-signing |
 
-## 2026-11-15 — issue #34 (part 2): no crash, but capture still produces no output (OPEN)
+## 2026-11-15 — issue #34 (part 2): no crash, photos captured, but not developed (OPEN)
 
 The crash, the array length-contract bug and the Pro paywall are all resolved
 (the reporter confirms: the app no longer crashes and shows "premium version
-is purchased"). What remains on the reporter's device (Pixel 7 Pro,
-Android 17): **photos and videos are still not saved, in any format.**
+is purchased"). Current state on the reporter's device (Pixel 7 Pro,
+Android 17, v2.3.1 bundle): **the photo is now captured and the RAW is
+saved, but it is not developed into the visible image** — no `.jpg`/`.png`
+output appears, same for video.
 
 The remaining failure is an **operation-level native refusal**. The five
 integrity gates stubbed in Stage 0 are the *checkers* — they throw
@@ -42,10 +44,19 @@ decides whether this (re-signed) build may perform the protected camera
 operation, and refuses. The wrapper sweep cannot restore the functionality by
 returning a fabricated "pass" — the output files are written by the native
 pipeline, so a swallowed refusal yields a running app with no output, which
-is exactly the field report. The refusal has to be answered at the binary
-level: the refusing entry point in `lib/arm64-v8a/libunnamed_raw.so` must be
-identified and stubbed the same way as the five integrity gates (globally
-unique 96-byte prologue + `bti jc; mov w0, #1; ret`).
+is exactly the field report.
+
+**Where it fails now:** the capture path (RAW write) completes — the
+v2.3.1-bundle progress — and the missing output appears in the **develop
+stage**, the RAW → visible-image conversion that runs after capture. The
+stack above is the pre-fix capture path; on the current bundle the refusal
+surfaces in the develop worker instead, and the per-rejection logging added
+in this re-cut names the JNI method that refuses it.
+
+The refusal has to be answered at the binary level: the refusing entry point
+in `lib/arm64-v8a/libunnamed_raw.so` must be identified and stubbed the same
+way as the five integrity gates (globally unique 96-byte prologue +
+`bti jc; mov w0, #1; ret`).
 
 **What the current re-cut adds for this:** the sweep handlers now log
 **each distinct rejection fingerprint once** (exception class + message + the

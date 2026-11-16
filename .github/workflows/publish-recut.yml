@@ -1,12 +1,12 @@
-name: Publish v2.3.0 re-cut (.mpp)
+name: Publish re-cut (.mpp)
 
 # One-off re-cut publisher (same convention as the earlier "Publish v2.x"
 # workflows). Builds the Android bundle on this branch and uploads it to the
-# existing v2.3.0 release, replacing the earlier asset that predates the
-# #34/#35/#29 fixes.
+# existing release matching the version in gradle.properties, replacing the
+# current asset with the re-cut.
 #
-# The job is gated on a marker commit ("publish-recut-v230" in the head
-# commit message) so the upload happens deliberately, not on every push.
+# The job is gated on a marker commit ("publish-recut" in the head commit
+# message) so the upload happens deliberately, not on every push.
 
 on:
   push:
@@ -18,8 +18,8 @@ permissions:
 
 jobs:
   publish:
-    name: Build and publish .mpp to v2.3.0
-    if: contains(github.event.head_commit.message, 'publish-recut-v230')
+    name: Build and publish .mpp
+    if: contains(github.event.head_commit.message, 'publish-recut')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -67,13 +67,14 @@ jobs:
           python3 .github/scripts/verify_android_bundle.py "patches/build/libs/patches-${VERSION}.mpp" "$VERSION" --patch-list patches-list.json
           python3 .github/scripts/verify_patch_source.py patches-bundle.json "$VERSION"
 
-      - name: Publish to release v2.3.0
+      - name: Publish to the release for the bundle version
         run: |
           set -euo pipefail
-          sha256sum patches/build/libs/patches-2.3.0.mpp
-          ls -l patches/build/libs/patches-2.3.0.mpp
-          gh release upload v2.3.0 patches/build/libs/patches-2.3.0.mpp --clobber
-          gh release view v2.3.0 --json assets --template '{{range .assets}}{{.name}} {{.Size}}{{"\n"}}{{end}}'
+          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
+          sha256sum "patches/build/libs/patches-${VERSION}.mpp"
+          ls -l "patches/build/libs/patches-${VERSION}.mpp"
+          gh release upload "v${VERSION}" "patches/build/libs/patches-${VERSION}.mpp" --clobber
+          gh release view "v${VERSION}" --json assets --template '{{range .assets}}{{.name}} {{.Size}}{{"\n"}}{{end}}'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,10 +87,11 @@ jobs:
           set -euo pipefail
           git config user.name "ineednotitle"
           git config user.email "100122698+ineednotitle@users.noreply.github.com"
+          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
           mkdir -p .publish
-          sha256sum patches/build/libs/patches-2.3.0.mpp | awk '{print $1}' > .publish/patches-2.3.0.mpp.sha256
-          git add .publish/patches-2.3.0.mpp.sha256
-          git commit -m "chore: record the SHA-256 of the published v2.3.0 re-cut asset"
+          sha256sum "patches/build/libs/patches-${VERSION}.mpp" | awk '{print $1}' > ".publish/patches-${VERSION}.mpp.sha256"
+          git add ".publish/patches-${VERSION}.mpp.sha256"
+          git commit -m "chore: record the SHA-256 of the published v${VERSION} re-cut asset"
           git push origin HEAD:arena/a2182647-proteus-patches
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
