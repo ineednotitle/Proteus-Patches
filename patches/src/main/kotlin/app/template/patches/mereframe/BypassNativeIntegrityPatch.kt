@@ -4,6 +4,7 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.patch.rawResourcePatch
+import app.morphe.patcher.util.proxy.mutableTypes.MutableClass
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.template.patches.shared.Constants.MEREFRAME_COMPATIBILITY
 import app.template.patches.shared.clearBody
@@ -117,8 +118,8 @@ private val bypassNativeSoIntegrityPatch = rawResourcePatch {
  * method reflectively, validates the verdict's domain (length 2, element 1 in
  * (0,4)) and degrades to {0L, 1L} on ANY throw or mismatch.
  *
- * Stage 2 (sweep): every OTHER public wrapper on the SAME bridge class — the
- * exact class Stage 1's fingerprint resolves — whose body invokes one of that
+ * Stage 2 (sweep): every OTHER public wrapper on EVERY
+ * `app.unnamed.rawrecording.b.B*` bridge class whose body invokes one of that
  * class's native methods gets a REAL try/catch installed in its own code item:
  *
  *     try { <the original body, untouched> } catch (Throwable t) {
@@ -143,7 +144,7 @@ private val bypassNativeSoIntegrityPatch = rawResourcePatch {
  * emits the resolved inventory — method name, parameter descriptor and return
  * enumeration for the build being patched.
  *
- * STAGE 2 USES THE CLASS STAGE 1 ALREADY FOUND
+ * STAGE 2 SWEEPS EVERY B* BRIDGE CLASS
  *
  * An earlier revision re-searched the whole app package for "bridge classes"
  * and joined a wrapper's native call against a set of descriptor strings. Both
@@ -151,16 +152,21 @@ private val bypassNativeSoIntegrityPatch = rawResourcePatch {
  * Method and an invoke-side MethodReference do not stringify parameterTypes the
  * same way, so the keys never matched: the sweep reported
  * "0 wrapper(s) guarded across 0 bridge class(es)" while the on-device crash
- * kept naming unguarded wrappers (q(IJID)D). Stage 2 therefore:
+ * kept naming unguarded wrappers (q(IJID)D). A later revision guarded only the
+ * pinned bridge class — correct for the session crash, but the ~117 native
+ * call sites are spread across all 17 B* bridges, and the per-operation
+ * refusal behind "Couldn't develop · the RAW is safe" (#34 part 2) can live on
+ * any of them, including ones the pinned sweep never saw. Stage 2 therefore:
  *
- * - takes the class directly with mutableClassDefBy(BRIDGE_CLASS) — the same
- *   type Stage 1's fingerprint matched, so it cannot "match nothing" while
- *   Stage 1 succeeds, and it marks the class mutable so the handlers are
+ * - enumerates every `Lapp/unnamed/rawrecording/b/B*` class of the APK being
+ *   patched (the pinned bridge is one of them, so it cannot be missed while
+ *   Stage 1 succeeds) and upgrades each to mutable so the handlers are
  *   written out;
- * - identifies the class's native methods by name + parameter count + return
+ * - identifies each class's native methods by name + parameter count + return
  *   type, never by a descriptor string;
- * - logs the class it operated on, the native count, the guarded count and every
- *   skipped wrapper with its reason, so a zero count is always explainable.
+ * - logs the class it operated on, the native count, the guarded count and
+ *   every skipped wrapper with its reason, so a zero count is always
+ *   explainable — and a swallowed refusal logs the JNI method that refused it.
  *
  * FINGERPRINT DRIFT
  *
@@ -185,9 +191,9 @@ private val bypassNativeSoIntegrityPatch = rawResourcePatch {
 val bypassNativeIntegrityPatch = bytecodePatch(
     name = "Bypass native integrity checks",
     description = "Neutralizes libunnamed_raw.so's five ARM64 self-integrity gates (BTI/PAC-safe) " +
-        "and wraps the session-opening plus every other native-calling bridge wrapper in a real " +
-        "JVM try/catch that fails open on integrity errors. Required together with " +
-        "'Allow re-signed/sideloaded installs'.",
+        "and wraps the session-opening plus every other native-calling wrapper on every " +
+        "app.unnamed.rawrecording.b.B* bridge class in a real JVM try/catch that fails open " +
+        "on integrity errors. Required together with 'Allow re-signed/sideloaded installs'.",
     default = true,
 ) {
     compatibleWith(MEREFRAME_COMPATIBILITY)
@@ -237,68 +243,109 @@ val bypassNativeIntegrityPatch = bytecodePatch(
             )
         }
 
-        // ── Stage 2: sweep the bridge class Stage 1 resolved ──────────────
-        // The same class Stage 1's fingerprint matched — no second search that
-        // can silently match nothing. mutableClassDefBy also upgrades the class
-        // to mutable, so the injected handlers are written out.
-        val bridgeClass = runCatching { mutableClassDefBy(BRIDGE_CLASS) }.getOrNull()
-        if (bridgeClass == null) {
-            logUniversal(
-                "Bypass native integrity: bridge class $BRIDGE_CLASS not found — wrapper sweep skipped " +
-                    "(stage 1 still applied). Send the app version + patching log.",
-            )
-        } else {
-            // Native methods declared by the bridge class itself. The key is
-            // name + parameter count + return type: a DEX-backed Method and an
-            // invoke-side MethodReference stringify parameterTypes differently,
-            // so a descriptor-string key never matched (that was the no-op bug).
-            val natives = HashSet<String>()
-            bridgeClass.methods.forEach { method ->
-                if (AccessFlags.NATIVE.isSet(method.accessFlags)) {
-                    natives += "${method.name}#${method.parameterTypes.size}#${method.returnType}"
-                }
-            }
-
-            if (natives.isEmpty()) {
-                logUniversal(
-                    "Bypass native integrity: $BRIDGE_CLASS declares no native methods — wrapper sweep skipped.",
-                )
-            } else {
-                val guarded = ArrayList<String>()
-                val skipped = ArrayList<String>()
-
-                bridgeClass.methods.toList().forEach { method ->
-                    val descriptor = method.descriptor()
-                    val reason = method.guardSkipReason(natives, BRIDGE_CLASS)
-                    if (reason != null) {
-                        skipped += "$descriptor ($reason)"
-                    } else {
-                        runCatching { plantIntegrityHandler(method, method.returnType) }
-                            .onSuccess { guarded += descriptor }
-                            .onFailure { skipped += "$descriptor (${it.message})" }
-                    }
-                }
-
-                logUniversal(
-                    "Bypass native integrity: bridge $BRIDGE_CLASS declares ${natives.size} native " +
-                        "method(s) — ${guarded.size} wrapper(s) guarded, ${skipped.size} left on the " +
-                        "native verdict.",
-                )
-                if (guarded.isNotEmpty()) {
-                    logUniversal(
-                        "Bypass native integrity: guarded in $BRIDGE_CLASS: ${guarded.joinToString(", ")}",
-                    )
-                }
-                if (skipped.isNotEmpty()) {
-                    logUniversal(
-                        "Bypass native integrity: left in $BRIDGE_CLASS: ${skipped.joinToString(", ")}",
-                    )
-                }
+        // ── Stage 2: sweep every native bridge class in the app package ───
+        // The ~117 integrity call sites are spread across ALL
+        // app.unnamed.rawrecording.b.B* bridge classes, and the per-operation
+        // refusal behind "Couldn't develop · the RAW is safe" (#34 part 2) can
+        // live on any of them — not just the pinned session bridge. Collect
+        // the class list first, then mutate: mutableClassDefBy upgrades the
+        // class in the underlying map, so iterating while mutating is not safe.
+        val bridgeTypes = mutableListOf<String>()
+        classDefForEach { classDef ->
+            if (classDef.type.startsWith(BRIDGE_PACKAGE_PREFIX) && classDef.type.endsWith(";")) {
+                bridgeTypes += classDef.type
             }
         }
 
-        logUniversal("Bypass native integrity: native ARM64 gates + DEX wrapper guards active.")
+        if (bridgeTypes.isEmpty()) {
+            logUniversal(
+                "Bypass native integrity: no ${BRIDGE_PACKAGE_PREFIX}* bridge classes found — " +
+                    "wrapper sweep skipped (stage 1 still applied). Send the app version + patching log.",
+            )
+        }
+
+        var classesSwept = 0
+        var totalGuarded = 0
+        bridgeTypes.forEach { type ->
+            val bridgeClass = runCatching { mutableClassDefBy(type) }.getOrNull()
+            if (bridgeClass == null) return@forEach
+
+            val result = sweepBridgeClass(bridgeClass, type)
+            if (result.nativeCount == 0) return@forEach
+            classesSwept++
+            totalGuarded += result.guarded.size
+
+            logUniversal(
+                "Bypass native integrity: bridge $type declares ${result.nativeCount} native " +
+                    "method(s) — ${result.guarded.size} wrapper(s) guarded, ${result.skipped.size} " +
+                    "left on the native verdict.",
+            )
+            if (result.guarded.isNotEmpty()) {
+                logUniversal(
+                    "Bypass native integrity: guarded in $type: ${result.guarded.joinToString(", ")}",
+                )
+            }
+            if (result.skipped.isNotEmpty()) {
+                logUniversal(
+                    "Bypass native integrity: left in $type: ${result.skipped.joinToString(", ")}",
+                )
+            }
+        }
+
+        logUniversal(
+            "Bypass native integrity: native ARM64 gates + DEX wrapper guards active " +
+                "($totalGuarded wrapper(s) guarded across $classesSwept bridge class(es)).",
+        )
     }
+}
+
+/**
+ * Result of sweeping one bridge class: how many native methods it declares,
+ * which wrappers got handlers, and which were left on the native verdict
+ * (every skip reason is logged verbatim).
+ */
+private data class BridgeSweepResult(
+    val nativeCount: Int,
+    val guarded: List<String>,
+    val skipped: List<String>,
+)
+
+/**
+ * Guard every public wrapper of [bridgeClass] whose body invokes one of that
+ * class's own native methods.
+ */
+private fun sweepBridgeClass(bridgeClass: MutableClass, bridgeType: String): BridgeSweepResult {
+    // Native methods declared by the bridge class itself. The key is
+    // name + parameter count + return type: a DEX-backed Method and an
+    // invoke-side MethodReference stringify parameterTypes differently,
+    // so a descriptor-string key never matched (that was the no-op bug).
+    val natives = HashSet<String>()
+    bridgeClass.methods.forEach { method ->
+        if (AccessFlags.NATIVE.isSet(method.accessFlags)) {
+            natives += "${method.name}#${method.parameterTypes.size}#${method.returnType}"
+        }
+    }
+
+    if (natives.isEmpty()) {
+        return BridgeSweepResult(0, emptyList(), emptyList())
+    }
+
+    val guarded = ArrayList<String>()
+    val skipped = ArrayList<String>()
+
+    bridgeClass.methods.toList().forEach { method ->
+        val descriptor = method.descriptor()
+        val reason = method.guardSkipReason(natives, bridgeType)
+        if (reason != null) {
+            skipped += "$descriptor ($reason)"
+        } else {
+            runCatching { plantIntegrityHandler(method, method.returnType) }
+                .onSuccess { guarded += descriptor }
+                .onFailure { skipped += "$descriptor (${it.message})" }
+        }
+    }
+
+    return BridgeSweepResult(natives.size, guarded, skipped)
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -306,6 +353,9 @@ val bypassNativeIntegrityPatch = bytecodePatch(
 // ─────────────────────────────────────────────────────────────────────────
 
 private const val BRIDGE_CLASS = "Lapp/unnamed/rawrecording/b/B1e6ad8077f6880e309d8da4b;"
+
+/** Package prefix of every native bridge class the sweep covers (17 on 0.8.4). */
+private const val BRIDGE_PACKAGE_PREFIX = "Lapp/unnamed/rawrecording/b/B"
 
 private const val PINNED_METHOD_NAME = "d"
 private const val PINNED_RETURN_TYPE = "[J"
@@ -342,7 +392,9 @@ private fun Method.guardSkipReason(natives: Set<String>, bridgeClass: String): S
         return "switch/array payload in body"
     }
 
-    if (definingClass == bridgeClass &&
+    // The pinned session wrapper is stage 1's, on the pinned class only — a
+    // same-named method on another bridge class is NOT guarded by stage 1.
+    if (definingClass == BRIDGE_CLASS &&
         name == PINNED_METHOD_NAME &&
         returnType == PINNED_RETURN_TYPE &&
         parameterTypes.size == PINNED_PARAMETERS.size

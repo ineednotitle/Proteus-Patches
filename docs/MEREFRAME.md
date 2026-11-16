@@ -10,7 +10,7 @@ current status page and the triage runbook for field crashes.
 | Patch | Default | Role |
 |---|---|---|
 | Allow re-signed/sideloaded installs | **on** | Neutralizes the startup install-legality verdict → app starts at all |
-| Bypass native integrity checks | **on** | Patches all 5 ARM64 integrity gates in `lib/arm64-v8a/libunnamed_raw.so` with BTI/PAC-safe `bti jc; mov w0, #1; ret` stubs, routes `B1e6ad...->d(ZZZZFZ)[J` through `MereframeIntegrityHook` JVM try/catch, **and** plants the same real try/catch in every other public wrapper on that bridge class that calls the native engine (see [2026-11-12](#2026-11-12--issue-5-part-2-the-integrity-throw-is-not-limited-to-d)) |
+| Bypass native integrity checks | **on** | Patches all 5 ARM64 integrity gates in `lib/arm64-v8a/libunnamed_raw.so` with BTI/PAC-safe `bti jc; mov w0, #1; ret` stubs, routes `B1e6ad...->d(ZZZZFZ)[J` through `MereframeIntegrityHook` JVM try/catch, **and** plants the same real try/catch in every other public wrapper on **every `B*` bridge class** that calls the native engine, logging each distinct rejection fingerprint (see [2026-11-12](#2026-11-12--issue-5-part-2-the-integrity-throw-is-not-limited-to-d) and [2026-11-15](#2026-11-15--issue-34-part-2-no-crash-photos-captured-but-not-developed-open)) |
 | Diagnostic crash log | off | Writes the full stack to `Downloads/mereframe-crash-*.txt`, then chains to the normal crash path |
 | Unlock Pro features | off | Unlocks `Qu.k/m` (full `Llr.p` set), neutralizes `Bf1c089` Paywall/session/receipt gates (`e`, `g`, `b`, `c`, `i`, `h`, `d`), and patches native `0x242048`/`0x244680` in `libunnamed_raw.so` so Pro capture & `PhotoEditActivity` run without paywall popups or `SecurityException` crashes |
 | Fix Firebase after re-signing (universal) | off | Needed if Firebase services break after re-signing |
@@ -58,13 +58,19 @@ in `lib/arm64-v8a/libunnamed_raw.so` must be identified and stubbed the same
 way as the five integrity gates (globally unique 96-byte prologue +
 `bti jc; mov w0, #1; ret`).
 
-**What the current re-cut adds for this:** the sweep handlers now log
-**each distinct rejection fingerprint once** (exception class + message + the
-throwing frame; capped at 12 entries). For a native refusal the throwing
-frame names the JNI method that refused the call — on a pinned build
-(0.8.4 / vc 118) that is the direct input for locating the function in the
-`.so`. Previously only the first refusal of a process was logged, which hid
-the operation-level gate behind the first integrity throw.
+**What the current re-cut adds for this:**
+
+1. The wrapper sweep now covers **every `app.unnamed.rawrecording.b.B*`
+   bridge class** (17 on 0.8.4), not just the pinned session bridge — the
+   ~117 native call sites are spread across all of them, and the develop
+   path routes through bridges the pinned sweep never guarded.
+2. The sweep handlers log **each distinct rejection fingerprint once**
+   (exception class + message + the throwing frame; capped at 12 entries).
+   For a native refusal the throwing frame names the JNI method that refused
+   the call — on a pinned build (0.8.4 / vc 118) that is the direct input
+   for locating the function in the `.so`. Previously only the first refusal
+   of a process was logged, which hid the operation-level gate behind the
+   first integrity throw.
 
 Triage if capture/develop still produces nothing after the re-cut:
 
@@ -167,8 +173,9 @@ through `MereframeIntegrityHook.openSessionWithFallback`, which calls the native
 method reflectively, validates the verdict's domain (length 2, element 1 in
 (0,4)) and degrades to `{0L, 1L}` on any throw or mismatch.
 
-**Stage 2 — wrapper sweep (new).** Every other public wrapper that invokes one
-of the bridge's native methods gets a **real try/catch in its own code item**:
+**Stage 2 — wrapper sweep (new).** Every other public wrapper on **any
+`app.unnamed.rawrecording.b.B*` bridge class** that invokes one of that
+bridge's native methods gets a **real try/catch in its own code item**:
 
 ```text
 try { <original body, untouched> } catch (Throwable t) {
