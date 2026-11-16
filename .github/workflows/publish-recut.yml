@@ -5,8 +5,10 @@ name: Publish re-cut (.mpp)
 # existing release matching the version in gradle.properties, replacing the
 # current asset with the re-cut.
 #
-# The job is gated on a marker commit ("publish-recut" in the head commit
-# message) so the upload happens deliberately, not on every push.
+# The job is gated on a marker commit ("publish-recut" at the START of the
+# head commit message) so the upload happens deliberately, not on every
+# push. (A plain substring match fired on a commit that merely mentioned
+# the marker in its body.)
 
 on:
   push:
@@ -19,7 +21,7 @@ permissions:
 jobs:
   publish:
     name: Build and publish .mpp
-    if: contains(github.event.head_commit.message, 'publish-recut')
+    if: startsWith(github.event.head_commit.message, 'publish-recut')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
