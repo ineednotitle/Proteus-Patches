@@ -26,7 +26,7 @@ const val DEFAULT_GMS_CORE_VENDOR = "app.revanced.android.gms"
 
 // Derive the vendor group prefix for com.google.* rewrites
 // e.g. "app.revanced.android.gms" → "app.revanced"
-private fun gmsVendorGroup(vendor: String): String = when {
+internal fun gmsVendorGroup(vendor: String): String = when {
     vendor.endsWith(".android.gms") -> vendor.removeSuffix(".android.gms")
     vendor.endsWith(".manager") -> vendor.removeSuffix(".manager")
     else -> vendor
@@ -65,7 +65,7 @@ private val ActivityOnCreateFingerprint = Fingerprint(
     },
 )
 
-private val GMS_PERMISSIONS = setOf(
+internal val GMS_PERMISSIONS = setOf(
     "com.google.android.c2dm.permission.RECEIVE",
     "com.google.android.c2dm.permission.SEND",
     "com.google.android.gms.auth.api.phone.permission.SEND",
@@ -88,7 +88,7 @@ private val GMS_PERMISSIONS = setOf(
     "com.google.android.providers.gsf.permission.READ_GSERVICES",
 )
 
-private val GMS_ACTIONS = setOf(
+internal val GMS_ACTIONS = setOf(
     "com.google.android.c2dm.intent.RECEIVE",
     "com.google.android.c2dm.intent.REGISTER",
     "com.google.android.c2dm.intent.REGISTRATION",
@@ -160,7 +160,7 @@ private val GMS_ACTIONS = setOf(
     "com.google.iid.TOKEN_REQUEST",
 )
 
-private val GMS_AUTHORITIES = setOf(
+internal val GMS_AUTHORITIES = setOf(
     "com.google.android.gms.fileprovider",
     "com.google.android.gms.auth.accounts",
     "com.google.android.gms.chimera",
@@ -190,7 +190,7 @@ private val APP_AUTHORITIES = mutableSetOf<String>()
  * and permission are present. Creates the `<queries>` element when the manifest has
  * none.
  */
-private fun upsertQueriesPackage(doc: org.w3c.dom.Document, packageName: String) {
+internal fun upsertQueriesPackage(doc: org.w3c.dom.Document, packageName: String) {
     val manifest = doc.getElementsByTagName("manifest").item(0) as? Element ?: return
     val queriesNodes = doc.getElementsByTagName("queries")
     val queries: Element = if (queriesNodes.length > 0) {

@@ -25,7 +25,7 @@ Gemini on Play is a **dynamic-feature shell**:
 
 | Layer | Status |
 |---|---|
-| Play Services (GmsCore) presence check | **Patchable.** The shell reads `com.google.android.gms.version` and carries `GoogleApiActivity` + Google Sign-In types. The universal **"GmsCore support (MicroG)"** patch routes all GMS calls to MicroG RE and is already compatible with any app, including Gemini. With MicroG RE installed the app can start without Google Play Services. |
+| Play Services (GmsCore) presence check | **Patchable.** The shell reads `com.google.android.gms.version` and carries `GoogleApiActivity` + Google Sign-In types. The scoped **"MicroG integration (GmsCore)"** patch (see below) — or the universal **"GmsCore support (MicroG)"** patch — rewrites the GMS strings in the shell DEX to the MicroG package, injects the spoofing meta-data + `FAKE_PACKAGE_SIGNATURE` + `<queries>` entry, stubs the "Google Play Services not available" / availability checks to success and injects the runtime `checkGmsCore()` into the launcher activity. With MicroG RE installed the app can start without Google Play Services. |
 | Google **account** sign-in | **Not patchable.** Gemini chat requires a signed-in Google account, and this build uses modern auth (targetSdk 35) — exactly the class the GmsCore patch documentation flags as unreliable (Credential Manager / custom auth + Play Integrity). Without a real Google account (or a MicroG account setup that happens to work for this app) the app opens but cannot chat. |
 | Play Store presence | Not a hard dependency of the shell; the universal **"Block in-app update & review prompts"** patch removes the Play Core update-dialog path. |
 
@@ -70,10 +70,20 @@ reachable from the shell APK.
 |---|---|---|
 | Strip camera, mic, phone & contacts permissions | manifest | on |
 | Gemini privacy hardening | manifest | on |
-| GmsCore support (MicroG) *(universal)* | bytecode + manifest | off |
+| MicroG integration (GmsCore) | bytecode + manifest | off |
+| GmsCore support (MicroG) *(universal alternative)* | bytecode + manifest | off |
 | Block advertising & device IDs *(universal)* | bytecode | off |
 | Block crash-reporting SDKs *(universal)* | bytecode | off |
 | Block in-app update & review prompts *(universal)* | bytecode | off |
+
+The **MicroG integration (GmsCore)** patch is the scoped equivalent of the
+universal GmsCore patch, preconfigured for Gemini (launcher activity
+`BardEntryPointActivity`, no package rename). The spoofed signature defaults
+to the standard Google Play release certificate
+(SHA-1 `24bb24c05e47e0aefa68a58a766179d9b613a600` — the same key the Google
+Photos scoped patch ships with); the "Provide Original app certificate" patch
+overrides it if Gemini is signed with a different key. It depends on that
+certificate patch being *available* in the session, not on it being applied.
 
 Both targets (1.0.795460806 / vc 272, 1.0.913571982 / vc 296) are registered
 as **experimental** — static layout verified against the 1.0.795460806 shell;
