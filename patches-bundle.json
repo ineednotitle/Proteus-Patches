@@ -1,6 +1,6 @@
 {
-  "created_at": "2026-11-17T11:15:00",
-  "description": "v2.3.1 (pre-release re-cut #5; replaces the earlier v2.3.1 assets). Adds the Gemini MicroG integration (GmsCore) patch: rewrites the shell DEX GMS strings to the selected MicroG vendor, injects the spoofing meta-data + FAKE_PACKAGE_SIGNATURE + <queries> entry, stubs the GMS availability checks to success and injects checkGmsCore() into the launcher activity — Gemini boots and resolves Play Services through MicroG RE without the Google Play Services app (a Google account is still required for chat). Carries re-cut #4's Gemini permission-strip + privacy patches (docs/GEMINI.md), re-cut #3's all-B*-bridge Mereframe sweep (#34/#35/#29) and re-cut #2's Netflix Android TV support.",
+  "created_at": "2026-11-17T11:45:00",
+  "description": "v2.3.1 (pre-release re-cut #6; replaces the earlier v2.3.1 assets). Adds the Gemini 'Google app missing: open Gemini in browser' patch: recent Gemini builds host the chat inside the Google app (the shell deep-links https://bard.google.com/android?source=bardshell into GSA), so the 'Download or enable the Google app' dialog is removed by opening gemini.google.com/app in the browser instead. Pre-migration Gemini builds (1.0.776555963, 1.0.608774175) are registered as experimental targets for fully in-app, Google-app-free use with the MicroG integration patch. Carries re-cut #5 (Gemini MicroG integration), #4 (Gemini permission/privacy patches), #3 (Mereframe all-bridge sweep, #34/#35/#29) and #2 (Netflix Android TV).",
   "download_url": "https://github.com/ineednotitle/Proteus-Patches/releases/download/v2.3.1/patches-2.3.1.mpp",
   "signature_download_url": "",
   "version": "2.3.1"
