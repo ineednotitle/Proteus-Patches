@@ -33,7 +33,7 @@ jobs:
         run: |
           ./gradlew buildAndroid --stacktrace > build.log 2>&1 && tail -5 build.log && exit 0
           echo "=== GREP: exception headers ==="
-          grep -n -m 24 -E "^e: |^w: |What went wrong|FAILURE:|Caused by|Exception|Error|Killed|No space|OutOfMemory|ExceptionInInitializerError|AssertionError" build.log | while IFS= read -r line; do
+          grep -n -m 12 -E "^e: |What went wrong|FAILURE:|Caused by|Exception|Error|Killed|No space|OutOfMemory|ExceptionInInitializerError|AssertionError" build.log | while IFS= read -r line; do
             echo "::error::$line"
             echo "$line"
           done
