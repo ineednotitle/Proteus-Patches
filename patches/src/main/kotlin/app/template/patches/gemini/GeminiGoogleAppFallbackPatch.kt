@@ -74,11 +74,11 @@ val geminiGoogleAppFallbackPatch = bytecodePatch(
                     new-instance v0, Landroid/content/Intent;
                     const-string v1, "android.intent.action.VIEW"
                     const-string v2, "$GEMINI_WEB_URL"
-                    invoke-static v2, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+                    invoke-static {v2}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
                     move-result-object v2
-                    invoke-direct v0, v1, v2, Landroid/content/Intent;-><init>(Ljava/lang/String; Landroid/net/Uri;)V
+                    invoke-direct {v0, v1, v2}, Landroid/content/Intent;-><init>(Ljava/lang/String; Landroid/net/Uri;)V
                     const v1, 0x10000000
-                    invoke-virtual v0, v1, Landroid/content/Intent;->addFlags(I)Landroid/content/Intent;
+                    invoke-virtual {v0, v1}, Landroid/content/Intent;->addFlags(I)Landroid/content/Intent;
                     return-object v0
                 """.trimIndent(),
             )
