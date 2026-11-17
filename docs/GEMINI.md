@@ -106,6 +106,22 @@ as **experimental** — static layout verified against the 1.0.795460806 shell;
 on-device behaviour (especially MicroG sign-in) may vary and has not been
 verified on a device yet.
 
+### Install: `INSTALL_FAILED_DUPLICATE_PERMISSION` when cloning side-by-side
+
+Morphe's universal **Clone app** patch renames the package to
+`<original>.morphe` so the patched copy installs next to the original, but its
+**"Update permissions"** option (on by default) is what rewrites the app's
+declared custom permissions — notably AndroidX's
+`com.google.android.apps.bard.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`. If
+that option is off, the clone redeclares the original app's permission and the
+package manager refuses the install while the original Gemini is present.
+
+Fixes:
+
+- Re-patch with **Clone app → Update permissions enabled**, or
+- Uninstall the original `com.google.android.apps.bard` before installing the
+  patched APK (no side-by-side).
+
 ## Method
 
 - Manifest: full AXML dump (permissions, queries, components, meta-data).
