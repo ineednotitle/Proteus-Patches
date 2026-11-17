@@ -674,6 +674,21 @@ val GBOARD_COMPATIBILITY = Compatibility(
         )
     )
 
+val GEMINI_COMPATIBILITY = Compatibility(
+        name = "Gemini",
+        packageName = "com.google.android.apps.bard",
+        description = "Google Gemini assistant (com.google.android.apps.bard). Ships as a " +
+            "dynamic-feature shell: the base APK only contains the launcher entry point, " +
+            "widgets and the Clearcut/Phenotype telemetry plumbing — the chat, voice and " +
+            "image features are delivered through Play delivery modules. All targets are " +
+            "experimental: verified against the static layout, on-device behaviour may vary.",
+        appIconColor = 0x4285F4,
+        targets = listOf(
+            AppTarget(version = "1.0.795460806", versionCode = 272, isExperimental = true),
+            AppTarget(version = "1.0.913571982", versionCode = 296, isExperimental = true)
+        )
+    )
+
 val GREENIFY_COMPATIBILITY = Compatibility(
         name = "Greenify",
         packageName = "com.oasisfeng.greenify",
