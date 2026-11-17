@@ -244,7 +244,7 @@ val geminiGmsCorePatch = bytecodePatch(
 
         fun transform(str: String): String? {
             rewriteStrings[str]?.let { return it }
-            transformContentUri(str)
+            return transformContentUri(str)
         }
 
         var rewritten = 0
