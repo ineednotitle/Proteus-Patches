@@ -677,15 +677,22 @@ val GBOARD_COMPATIBILITY = Compatibility(
 val GEMINI_COMPATIBILITY = Compatibility(
         name = "Gemini",
         packageName = "com.google.android.apps.bard",
-        description = "Google Gemini assistant (com.google.android.apps.bard). Ships as a " +
-            "dynamic-feature shell: the base APK only contains the launcher entry point, " +
-            "widgets and the Clearcut/Phenotype telemetry plumbing — the chat, voice and " +
-            "image features are delivered through Play delivery modules. All targets are " +
+        description = "Google Gemini assistant (com.google.android.apps.bard). Recent builds " +
+            "(1.0.795460806+) are a shell that hosts the chat inside the Google app (GSA) and " +
+            "refuses to start without it; the browser-fallback patch replaces that dialog with " +
+            "gemini.google.com/app. Pre-migration builds run the chat in-app and can work " +
+            "without the Google app via the MicroG integration patch. All targets are " +
             "experimental: verified against the static layout, on-device behaviour may vary.",
         appIconColor = 0x4285F4,
         targets = listOf(
             AppTarget(version = "1.0.795460806", versionCode = 272, isExperimental = true),
-            AppTarget(version = "1.0.913571982", versionCode = 296, isExperimental = true)
+            AppTarget(version = "1.0.913571982", versionCode = 296, isExperimental = true),
+            // Pre-Google-app-migration builds: the chat still runs in-app (feature
+            // modules) and can work without the Google app with the MicroG
+            // integration patch. Not re-analysed — anchors are from the 1.0.795460806
+            // shell layout, so on-device verification is required.
+            AppTarget(version = "1.0.776555963", isExperimental = true),
+            AppTarget(version = "1.0.608774175", isExperimental = true)
         )
     )
 

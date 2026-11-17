@@ -6,7 +6,21 @@ minSdk 28 / targetSdk 35, arm64-v8a, obtained from a Play "fused" export
 
 ## What the APK actually is
 
-Gemini on Play is a **dynamic-feature shell**:
+**Recent builds host the chat in the Google app.** In 1.0.795460806 the shell's
+`BardEntryPointActivity.onCreate` (a) calls
+`getPackageInfo("com.google.android.googlequicksearchbox")`, (b) when GSA is
+absent/disabled routes to `ErrorActivity` (the "Download or enable the Google
+app" dialog; the dialog intent is built by `Lbnf;->a(I)` — the method that
+puts the `"error-type"` extra, reachable only from the three GSA-failure
+branches of `onCreate`), and (c) even on the success path deep-links
+`https://bard.google.com/android?source=bardshell` **into the GSA package**.
+So this build cannot chat without the Google app — the chat UI is not in the
+bard APK. The "Google app missing: open Gemini in browser" patch replaces the
+dialog intent with a browser intent for `gemini.google.com/app`; a truly
+in-app, Google-app-free Gemini requires a pre-migration build
+(1.0.776555963 or older).
+
+The base APK is a **dynamic-feature shell**:
 
 - Base APK is ~5.4 MB, 2 DEX, ~5 500 classes — of which only **6** are
   `com.google.android.apps.bard.*` (application class, launcher entry activity,
@@ -26,6 +40,7 @@ Gemini on Play is a **dynamic-feature shell**:
 | Layer | Status |
 |---|---|
 | Play Services (GmsCore) presence check | **Patchable.** The shell reads `com.google.android.gms.version` and carries `GoogleApiActivity` + Google Sign-In types. The scoped **"MicroG integration (GmsCore)"** patch (see below) — or the universal **"GmsCore support (MicroG)"** patch — rewrites the GMS strings in the shell DEX to the MicroG package, injects the spoofing meta-data + `FAKE_PACKAGE_SIGNATURE` + `<queries>` entry, stubs the "Google Play Services not available" / availability checks to success and injects the runtime `checkGmsCore()` into the launcher activity. With MicroG RE installed the app can start without Google Play Services. |
+| **Google app (GSA) requirement** — recent builds | **Not patchable away; workable around.** The shell hard-requires `com.google.android.googlequicksearchbox` and deep-links the chat into it — the chat UI is not in the bard APK. The **"Google app missing: open Gemini in browser"** patch removes the dialog by opening `gemini.google.com/app` in the browser instead. A fully in-app, Google-app-free Gemini requires a **pre-migration build** (1.0.776555963 or older). |
 | Google **account** sign-in | **Not patchable.** Gemini chat requires a signed-in Google account, and this build uses modern auth (targetSdk 35) — exactly the class the GmsCore patch documentation flags as unreliable (Credential Manager / custom auth + Play Integrity). Without a real Google account (or a MicroG account setup that happens to work for this app) the app opens but cannot chat. |
 | Play Store presence | Not a hard dependency of the shell; the universal **"Block in-app update & review prompts"** patch removes the Play Core update-dialog path. |
 
@@ -70,6 +85,7 @@ reachable from the shell APK.
 |---|---|---|
 | Strip camera, mic, phone & contacts permissions | manifest | on |
 | Gemini privacy hardening | manifest | on |
+| Google app missing: open Gemini in browser | bytecode | on |
 | MicroG integration (GmsCore) | bytecode + manifest | off |
 | GmsCore support (MicroG) *(universal alternative)* | bytecode + manifest | off |
 | Block advertising & device IDs *(universal)* | bytecode | off |
