@@ -1,3 +1,5 @@
+> All releases up to and including v2.3.0 are stable releases.
+
 ## [2.3.1](https://github.com/ineednotitle/Proteus-Patches/compare/v2.3.0...v2.3.1) (2026-11-14)
 
 Pre-release re-cut: replaces the earlier v2.3.1 assets.
