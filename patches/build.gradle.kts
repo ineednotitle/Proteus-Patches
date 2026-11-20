@@ -126,12 +126,36 @@ tasks {
         mainClass.set("app.template.patches.firefox.shared.FirefoxHelpersTest")
     }
 
+    val testMalwarebytesUnlock by registering(JavaExec::class) {
+        description = "Test Malwarebytes plan-enum sweep helper"
+        group = "verification"
+        dependsOn(testClasses)
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("app.template.patches.malwarebytes.premium.MalwarebytesUnlockTest")
+    }
+
+    val testSpotifyClone by registering(JavaExec::class) {
+        description = "Test Spotify clone string-rewrite helpers"
+        group = "verification"
+        dependsOn(testClasses)
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("app.template.patches.spotify.misc.ChangePackageNameTest")
+    }
+
+    val testSpotifyAmoled by registering(JavaExec::class) {
+        description = "Test Spotify AMOLED color-shape helper"
+        group = "verification"
+        dependsOn(testClasses)
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("app.template.patches.spotify.ui.AmoledThemeTest")
+    }
+
     test {
         failOnNoDiscoveredTests.set(false)
     }
 
     check {
-        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram, testRedditCommentTree, testSpotifyHooks, testFirefox)
+        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram, testRedditCommentTree, testSpotifyHooks, testFirefox, testMalwarebytesUnlock, testSpotifyClone, testSpotifyAmoled)
     }
 
     // Used by gradle-semantic-release-plugin.

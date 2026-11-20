@@ -1,3 +1,16 @@
+## [2.4.0](https://github.com/ineednotitle/Proteus-Patches/compare/v2.3.1...v2.4.0) (2026-11-20)
+
+### ✨ New Features
+
+* **malwarebytes:** unlock the Total-tier rows — identity-theft protection and the VPN (issue #40). The feature-gate sweep now covers every subscription-state getter, and a generic plan-enum sweep replaces the FREE singleton with the top-tier one at class load. Features that the Malwarebytes service provisions per account (identity-theft monitoring, the VPN tunnel, Circle Safety) additionally depend on the account's backend state and cannot be granted client-side.
+* **spotify:** add the "AMOLED dark theme" patch (issue #50) — pure-black (#000000) surfaces in place of Spotify's dark grays, including the player bar and the bottom navigation. Resource-only and fail-safe; surfaces the app draws from code colors stay dark gray.
+* **claude:** add "GmsCore support (MicroG RE)" (issue #49) — routes Google Play Services through microG RE so Google sign-in and push work on re-signed installs, with the shared signature and install-source spoof patches. Does not bypass Play Integrity; requires a GmsCore app on the device.
+
+### 🐛 Bug Fixes
+
+* **spotify:** rewrite the DEX string constants the clone depends on (issue #51): provider authorities (bare and `content://` forms), custom permission names and the bare package name now follow the "Change package name" rename, so the cloned app stops querying the stock app's providers and its IPC keeps working.
+* **mereframe:** name the guarded wrapper in every containment log line (issue #34): the first contained integrity throw per wrapper is logged with the wrapper's class and method, so the patching log identifies every failing wrapper instead of only the first one.
+
 ## [2.3.1](https://github.com/ineednotitle/Proteus-Patches/compare/v2.3.0...v2.3.1) (2026-11-14)
 
 Pre-release re-cut #8 (2026-11-20): replaces the earlier v2.3.1 assets. Adds the Spotify and Firefox suites and rewords every Firefox patch description.
