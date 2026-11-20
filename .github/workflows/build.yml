@@ -2,6 +2,9 @@ name: Build patch bundle (.mpp)
 
 on:
   workflow_dispatch:
+  # API-triggered rebuilds (repository_dispatch, event_type: build-mpp).
+  repository_dispatch:
+    types: [build-mpp]
   push:
     branches:
       - main
