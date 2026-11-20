@@ -57,7 +57,17 @@ jobs:
           bash .github/scripts/test_instagram_extension.sh
 
       - name: Test permission removal, Brave, Instagram, Reddit, and Spotify helpers
-        run: ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy :patches:testInstagram :patches:testRedditCommentTree :patches:testSpotifyHooks :patches:testFirefox --stacktrace
+        run: |
+          ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy :patches:testInstagram :patches:testRedditCommentTree :patches:testSpotifyHooks :patches:testFirefox --stacktrace > test.log 2>&1 && tail -5 test.log && exit 0
+          echo "=== GREP: test failures ==="
+          grep -n -m 40 -E "FAILED|failed|Exception|\.kt:[0-9]+|Error|Caused by" test.log | while IFS= read -r line; do
+            echo "::error::$line"
+          done
+          echo "=== LAST 20 RAW LINES ==="
+          tail -n 20 test.log | while IFS= read -r line; do
+            echo "::warning::$line"
+          done
+          exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
