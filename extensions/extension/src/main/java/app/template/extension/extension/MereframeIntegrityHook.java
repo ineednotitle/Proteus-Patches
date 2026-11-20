@@ -367,13 +367,15 @@ public final class MereframeIntegrityHook {
         return prefix + " at " + callSite(t) + ": " + t;
     }
 
+    private static final String HOOK_CLASS = "app.template.extension.extension.MereframeIntegrityHook";
+
     /** Pure: the first stack frame outside this hook class = the guarded wrapper. */
     static String callSite(Throwable t) {
         StackTraceElement[] stack = t.getStackTrace();
         if (stack != null) {
             for (StackTraceElement frame : stack) {
                 String className = frame.getClassName();
-                if (!className.startsWith("app.template.extension.extension.MereframeIntegrityHook")) {
+                if (!className.equals(HOOK_CLASS) && !className.startsWith(HOOK_CLASS + "$")) {
                     return className + "." + frame.getMethodName();
                 }
             }
