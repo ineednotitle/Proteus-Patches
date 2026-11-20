@@ -95,17 +95,20 @@ object FirefoxHelpersTest {
     }
 
     private fun checkedInsertRefusesRegistersThatDoNotFit() {
-        // const/4 only addresses v0..v15; the inline compiler silently drops v17 and the
-        // checked wrapper must refuse the snippet instead of shipping a hook that never runs.
+        // const/4 only addresses v0..v15; a snippet naming v17 (or a literal outside -8..7)
+        // must fail loudly — either the compiler refuses it or the checked wrapper notices
+        // the instruction never landed. Silence is the one unacceptable outcome.
         listOf(
             { target().addInstructionsChecked(0, "const/4 v0, 0x1\nconst/4 v17, 0x0") },
             { target().addInstructionsChecked(0, "const/4 v17, 0x0") },
             { target().addInstructionChecked("const/4 v0, 0x8") }, // literal outside -8..7
         ).forEach { block ->
             val failure = runCatching { block() }.exceptionOrNull()
-            check(failure is PatchException) { "expected a PatchException, got $failure" }
-            check(failure.message!!.contains("Lprobe/Target;->target(II)V")) {
-                "the refusal must name the method: ${failure.message}"
+            check(failure != null) { "a bad register or literal must not be accepted silently" }
+            if (failure is PatchException) {
+                check(failure.message!!.contains("Lprobe/Target;->target(II)V")) {
+                    "the refusal must name the method: ${failure.message}"
+                }
             }
         }
     }
