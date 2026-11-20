@@ -80,10 +80,17 @@ jobs:
 
       - name: Verify Android bundle and remote source metadata
         run: |
-          python3 -m unittest discover -s .github/scripts -p 'test_*.py'
-          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
-          python3 .github/scripts/verify_android_bundle.py "patches/build/libs/patches-${VERSION}.mpp" "$VERSION"
-          python3 .github/scripts/verify_patch_source.py patches-bundle.json "$VERSION"
+          {
+            python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+            VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
+            python3 .github/scripts/verify_android_bundle.py "patches/build/libs/patches-${VERSION}.mpp" "$VERSION"
+            python3 .github/scripts/verify_patch_source.py patches-bundle.json "$VERSION"
+          } > verify.log 2>&1 && tail -5 verify.log && exit 0
+          echo "=== VERIFY OUTPUT ==="
+          tail -n 30 verify.log | while IFS= read -r line; do
+            echo "::error::$line"
+          done
+          exit 1
 
       - name: Upload .mpp artifact
         if: success()
