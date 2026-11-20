@@ -29,7 +29,7 @@ private const val EXTENSION_CLASS =
 context(patchContext: BytecodePatchContext)
 private fun Fingerprint.filterReturnedSections(extensionMethod: String): Boolean {
     val getters = matchAllOrNull().orEmpty()
-        .map { mutableClassDefBy(it.classDef) }
+        .map { patchContext.mutableClassDefBy(it.classDef) }
         .distinctBy { it.type }
         .flatMap { it.methods }
         .filter { method ->
