@@ -42,6 +42,10 @@ private val READ_ONLY_11X = setOf(
     Opcode.RETURN, Opcode.RETURN_WIDE, Opcode.RETURN_OBJECT,
     Opcode.MONITOR_ENTER, Opcode.MONITOR_EXIT, Opcode.THROW,
 )
+private val BLOCK_ENDS = setOf(
+    Opcode.GOTO, Opcode.GOTO_16, Opcode.GOTO_32, Opcode.RETURN, Opcode.RETURN_OBJECT, Opcode.RETURN_VOID,
+    Opcode.RETURN_WIDE, Opcode.THROW, Opcode.PACKED_SWITCH, Opcode.SPARSE_SWITCH,
+)
 
 /** Register constants (Int literal or String) known before each instruction, by linear scan. */
 private fun constantsBefore(insns: List<Instruction>): List<Map<Int, Any>> {
