@@ -1586,7 +1586,16 @@ val FIREFOX_COMPATIBILITY = Compatibility(
         packageName = "org.mozilla.firefox",
         apkFileType = ApkFileType.APK,
         appIconColor = 0xE66000,
-        targets = listOf(AppTarget(version = "158.0.2", versionCode = 2016191575))
+        targets = listOf(
+            AppTarget(version = "158.0.2", versionCode = 2016191575),
+            AppTarget(
+                version = "160.0",
+                versionCodes = mapOf(
+                    SupportedAbi.X86_64 to 2016194414,
+                    SupportedAbi.ARM64_V8A to 2016194415,
+                ),
+            ),
+        ),
     )
 
 val BRAVE_COMPATIBILITY = Compatibility(

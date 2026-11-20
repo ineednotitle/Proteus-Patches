@@ -33,10 +33,12 @@
 
 ## [2.3.1](https://github.com/ineednotitle/Proteus-Patches/compare/v2.3.0...v2.3.1) (2026-11-14)
 
-Pre-release re-cut: replaces the earlier v2.3.1 assets.
+Pre-release re-cut #8 (2026-11-20): replaces the earlier v2.3.1 assets. Adds the Spotify and Firefox suites and rewords every Firefox patch description.
 
 ### ✨ New Features
 
+* **spotify:** add the Spotify (`com.spotify.music`, 9.1.94.1929) patch suite — 13 patches for free trial, ads, download, lyrics, offline, quality, shuffle and the remaining premium gates, plus the Spotify extension (dynamic icon theming).
+* **firefox:** add the Firefox (`org.mozilla.firefox`, 158.0.2 / 160.0) patch suite — Disable telemetry, Enable about:config, Hide promotional prompts, Hide sponsored content, Unlock secret settings, DNS filter (Expert, DNS-over-HTTPS) and Keep background tabs loaded (Expert) — with fail-safe checked smali insertion for the new hooks.
 * **table-notes:** add Table Notes (`vivekagarwal.playwithdb`, 20261111) premium unlock. Forces the five entitlement flags and the tier in `App.<clinit>` so PDF/Word/Excel export, publishing and the paid feature set unlock, and the AdMob banner/interstitial slots are skipped (issue #29).
 * **netflix:** add the Netflix (Android TV, `com.netflix.ninja`) patch set — clone, CertCheck, household-prompt suppression, network-fingerprint minimisation and the in-process ad remover, ported from ajstrick81/morphe-androidtv-patches (GPL-3.0). Experimental for 13.2.x.
 * **mereframe:** short-circuit the `Ul.X` paywall funnel so Pro features stop falling through to the upsell sheet.

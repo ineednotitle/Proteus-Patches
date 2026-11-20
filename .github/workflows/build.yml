@@ -54,7 +54,7 @@ jobs:
           bash .github/scripts/test_instagram_extension.sh
 
       - name: Test permission removal, Brave, Instagram, Reddit, and Spotify helpers
-        run: ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy :patches:testInstagram :patches:testRedditCommentTree :patches:testSpotifyHooks --stacktrace
+        run: ./gradlew :patches:testPermissionRemoval :patches:testBravePrivacy :patches:testInstagram :patches:testRedditCommentTree :patches:testSpotifyHooks :patches:testFirefox --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
