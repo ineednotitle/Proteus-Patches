@@ -36,9 +36,11 @@ import com.android.tools.smali.dexlib2.iface.reference.StringReference
 
 private val CONST_LITERALS = setOf(Opcode.CONST_4, Opcode.CONST_16, Opcode.CONST, Opcode.CONST_HIGH16)
 private val CONST_STRINGS = setOf(Opcode.CONST_STRING, Opcode.CONST_STRING_JUMBO)
-private val BLOCK_ENDS = setOf(
-    Opcode.GOTO, Opcode.GOTO_16, Opcode.GOTO_32, Opcode.RETURN, Opcode.RETURN_OBJECT, Opcode.RETURN_VOID,
-    Opcode.RETURN_WIDE, Opcode.THROW, Opcode.PACKED_SWITCH, Opcode.SPARSE_SWITCH,
+
+// 11x opcodes that only read their one register; everything else naming one register writes it.
+private val READ_ONLY_11X = setOf(
+    Opcode.RETURN, Opcode.RETURN_WIDE, Opcode.RETURN_OBJECT,
+    Opcode.MONITOR_ENTER, Opcode.MONITOR_EXIT, Opcode.THROW,
 )
 
 /** Register constants (Int literal or String) known before each instruction, by linear scan. */
@@ -52,10 +54,7 @@ private fun constantsBefore(insns: List<Instruction>): List<Map<Int, Any>> {
             insn.opcode in CONST_STRINGS ->
                 known[(insn as OneRegisterInstruction).registerA] =
                     ((insn as ReferenceInstruction).reference as StringReference).string
-            insn.opcode.setsRegister() && insn is OneRegisterInstruction -> {
-                known.remove(insn.registerA)
-                if (insn.opcode.setsWideRegister()) known.remove(insn.registerA + 1)
-            }
+            insn is OneRegisterInstruction && insn.opcode !in READ_ONLY_11X -> known.remove(insn.registerA)
         }
         before
     }

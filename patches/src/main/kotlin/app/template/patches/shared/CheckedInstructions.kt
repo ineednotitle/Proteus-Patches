@@ -8,6 +8,7 @@ import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.morphe.patcher.util.smali.ExternalLabel
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
+import com.android.tools.smali.dexlib2.iface.instruction.OffsetInstruction
 
 /*
  * Count-checked versions of the patcher's smali `addInstruction(s)` extensions.
@@ -79,14 +80,23 @@ fun MutableMethod.addInstructionChecked(smaliInstruction: String) =
 
 /**
  * Throws unless the instruction at [index] exists and is no branch or switch target. Code inserted
- * at [index] goes in front of that instruction, but its labels stay on it, so a jump there would
+ * at [index] goes in front of that instruction, but any label on it stays, so a jump there would
  * skip the inserted code (e.g. a value forced right after the instruction that produced it).
  * [what] names the insertion in the error.
  */
 fun MutableMethod.requireNoBranchTargetAt(index: Int, what: String) {
-    val labels = implementation?.instructions?.getOrNull(index)?.location?.labels
-        ?: throw PatchException("${signature()}: $what: there is no instruction $index to insert before")
-    if (labels.isNotEmpty()) {
+    val impl = implementation
+        ?: throw PatchException("${signature()}: $what: the method has no implementation")
+    val insns = impl.instructions.toList()
+    if (index !in insns.indices) {
+        throw PatchException("${signature()}: $what: there is no instruction $index to insert before")
+    }
+    var address = 0
+    val addresses = insns.map { insn -> address.also { address += insn.codeUnits } }
+    val targets = insns.mapIndexedNotNull { i, insn ->
+        (insn as? OffsetInstruction)?.let { addresses[i] + it.codeOffset }
+    }.toSet()
+    if (addresses[index] in targets) {
         throw PatchException("${signature()}: $what: instruction $index is a branch target, a jump there would skip the insert")
     }
 }
@@ -108,9 +118,8 @@ private inline fun MutableMethod.checkedInsert(
         insert()
     } catch (e: NoSuchElementException) {
         throw PatchException(
-            "$api: the inline smali compiler kept no instruction for ${signature()}; " +
-                "${registerHint()}\n$smali",
-            e,
+            "$api: the inline smali compiler kept no instruction for ${signature()} " +
+                "(${e.message}); ${registerHint()}\n$smali",
         )
     }
     val kept = impl.instructions.count { it.opcode != Opcode.NOP } - before
