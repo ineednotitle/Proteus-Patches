@@ -110,12 +110,20 @@ tasks {
         mainClass.set("app.template.patches.reddit.shared.RedditCommentTreeTest")
     }
 
+    val testSpotifyHooks by registering(JavaExec::class) {
+        description = "Test Spotify hook plumbing (parameter registers, return hooks)"
+        group = "verification"
+        dependsOn(testClasses)
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("app.template.patches.spotify.shared.SpotifyHooksTest")
+    }
+
     test {
         failOnNoDiscoveredTests.set(false)
     }
 
     check {
-        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram, testRedditCommentTree)
+        dependsOn(testPermissionRemoval, testBravePrivacy, testInstagram, testRedditCommentTree, testSpotifyHooks)
     }
 
     // Used by gradle-semantic-release-plugin.
