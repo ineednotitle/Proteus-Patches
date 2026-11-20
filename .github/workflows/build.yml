@@ -16,6 +16,8 @@ jobs:
   build:
     name: Build .mpp
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -100,6 +102,17 @@ jobs:
           name: patches-mpp
           path: patches/build/libs/*.mpp
           if-no-files-found: error
+
+      # Re-cut mode: a repository_dispatch run that names release_tag replaces
+      # that release's bundle asset with the build just produced.
+      - name: Upload bundle to the release (re-cut dispatch)
+        if: success() && github.event_name == 'repository_dispatch' && github.event.client_payload.release_tag != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
+          gh release upload "${{ github.event.client_payload.release_tag }}" \
+            "patches/build/libs/patches-${VERSION}.mpp" --clobber --repo "$GITHUB_REPOSITORY"
 
       - name: Upload full gradle log
         if: failure()
