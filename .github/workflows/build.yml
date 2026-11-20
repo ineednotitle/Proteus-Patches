@@ -80,14 +80,15 @@ jobs:
 
       - name: Verify Android bundle and remote source metadata
         run: |
-          {
-            python3 -m unittest discover -s .github/scripts -p 'test_*.py'
-            VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
-            python3 .github/scripts/verify_android_bundle.py "patches/build/libs/patches-${VERSION}.mpp" "$VERSION"
-            python3 .github/scripts/verify_patch_source.py patches-bundle.json "$VERSION"
-          } > verify.log 2>&1 && tail -5 verify.log && exit 0
-          echo "=== VERIFY OUTPUT ==="
-          tail -n 30 verify.log | while IFS= read -r line; do
+          : > verify.log
+          RC1=0; python3 -m unittest discover -s .github/scripts -p 'test_*.py' >> verify.log 2>&1 || RC1=$?
+          VERSION=$(sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties)
+          echo "=== version=$VERSION rc-tests=$RC1 ===" >> verify.log
+          RC2=0; python3 .github/scripts/verify_android_bundle.py "patches/build/libs/patches-${VERSION}.mpp" "$VERSION" >> verify.log 2>&1 || RC2=$?
+          RC3=0; python3 .github/scripts/verify_patch_source.py patches-bundle.json "$VERSION" >> verify.log 2>&1 || RC3=$?
+          echo "=== rc: tests=$RC1 bundle=$RC2 source=$RC3 ===" >> verify.log
+          if [ "$RC1$RC2$RC3" = "000" ]; then tail -5 verify.log; exit 0; fi
+          tail -n 40 verify.log | while IFS= read -r line; do
             echo "::error::$line"
           done
           exit 1
